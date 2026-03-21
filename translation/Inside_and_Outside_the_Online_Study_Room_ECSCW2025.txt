@@ -1,0 +1,873 @@
+Sangji Lee , Taewon Yoo ,Eunil Park (2025): Inside and Outside the Online Study
+Room: An Exploratory Study of Student Practices and Perceptions. In: Proc. 23rd
+EUSSET Conf. on Computer-Supported Cooperative Work - Exploratory Papers, DOI:
+10.48340/ecscw2025_ep01
+Inside and Outside the Online Study
+Room: An Exploratory Study of Student
+Practices and Perceptions
+Sangji Lee1,*, Taewon Yoo2,,* Eunil Park1,3,†
+1Sungkyunkwan University, 2Yonsei University, 3Jaume I University
+Contact Author: sangllee@skku.edu, twyoo@yonsei.ac.kr, eunilpark@skku.edu
+Abstract. The increasing use of online study rooms raises critical questions regarding the
+dynamics and challenges of virtual learning environments. This study explores students’
+experiences in remote study settings through semi-structured interviews with 13 university
+students. We explore the factors influencing their participation, the obstacles they face
+before, during, and after study sessions, and the role of social interaction in sustaining
+motivation. Our findings highlight the significance of the perceived sense of responsibility
+enhanced by camera usage in maintaining concentration and engagement. Moreover,
+feelings of intimacy and belonging, particularly when studying with close peers, play
+significant roles in motivation and focus. Students also reported challenges, such as
+coordinating schedules and managing distractions in group study sessions. Based on
+these insights, we propose design implications for enhancing online study environments.
+We emphasize fostering a stronger sense of community, minimizing distractions, and
+facilitating effective collaboration. Our contributions inform the design of more inclusive
+and engaging virtual study platforms, with broader implications for learning communities
+and online collaboration tools.
+*Equallycontributedfirstauthors
+†Correspondingauthor
+cb
+Copyright2025byAuthors,DOI:10.48340/ecscw2025_ep01. Exceptasotherwise
+noted,thispaperislicencedundertheCreativeCommonsAttribution4.0InternationalLicence. To
+viewacopyofthislicence,visithttp://creativecommons.org/licenses/by/4.0/.Introduction
+Video-based communication is a ubiquitous method of interaction in diverse
+contexts. Many individuals rely on video calls for emotional support and close
+connection with their families (Brush et al., 2008; Cao et al., 2010). They also use
+video-mediated platforms to socialize, share meals, watch movies, or play games
+together (Heshmat and Neustaedter, 2021; Bryld et al., 2020; Brubaker et al.,
+2012).
+The widespread adoption of video-mediated platforms reshaped education and
+a shift accelerated by the COVID-19 pandemic. Virtual classrooms on platforms
+like Google Classroom facilitate remote learning1, while high-quality courses on
+Udemy2 and edX3 provide accessible educational content. However, the absence
+of face-to-face interactions often diminishes students’ motivation and focus. To
+addressthis,manystudentswatchorcreate“StudywithMe”videosonYouTubefor
+theirmotivations(Jhuangetal.,2022;Leeetal.,2021;KimandRyoo,2024),while
+othersseekstudypartnersthroughonlinecommunitiesandvirtualstudyroomssuch
+asStudyVerse4,StudyStream5,andFocusmate6.
+HCI and CSCW research extensively examined students’ experiences in virtual
+classrooms. Prior research explored perceptions and usage patterns of online study
+environments, while Dyer and Mandernach (2024) proposed methods to support
+learners with disabilities in online education. Several researchers also introduced
+tools and guidelines for enhancing remote learning. Liu et al. (2024) demonstrated
+how large language models(LLMs) can power virtual agents to foster active
+student participation in VR-based classrooms. Labrie et al. (2022) interviewed
+university instructors, identifying four key guidelines to mitigate technical
+challenges in videoconferencing-based education. Furthermore, Na et al. (2023)
+introduced Students’ Understanding Visualizer, a tool that enables instructors to
+assessreal-timestudentcomprehensionduringonlinelectures.
+Despite the growing area of virtual study platforms, little is known about why
+students study together without instructors, or how they form and sustain their
+online study groups. This informs our two main research questions: (1) What is
+the lifecycle of online study rooms for students? (2) How can we enhance student
+experienceintheseonlinestudyenvironments?
+We examine students’ experiences studying remotely with peers to address
+these questions. Through semi-structured interviews with 13 university students,
+we investigate their motivations, practices, and challenges in an online study
+setting. By analyzing these experiences, we identify key difficulties and propose
+design implications to enhance student engagement and support community
+1https://edu.google.com/intl/ALL_us/workspace-for-education/products/classroom
+2https://www.udemy.com
+3https://www.edx.org
+4https://csw.live/study-verse
+5https://www.studystream.live
+6https://www.focusmate.commanagers in fostering more effective online study environments. The main
+contributionsofthisstudyareasfollows.
+• We provide an in-depth understanding of how students perceive and engage
+inremoteonlinestudy.
+• We highlight critical obstacles students face before, during, and after virtual
+studysessions.
+• We offer recommendations to help students and community managers create
+moreengagingandsustainableonlinestudyexperiences.
+Related Work
+This section reviews prior studies on students’ experiences in social learning
+environments, including their peer-based and self-regulated learning engagements.
+We also examine research on remote study practices, including the role of digital
+platforms and video-based study communities. We then present the limitations of
+existing studies and discuss the need for further research to support students in
+remotestudyrooms.
+Understanding Students in Social Learning Environments
+Peer-BasedandSelf-RegulatedLearning
+Researchers studied how students interact in group studies, exploring their
+motivations, needs, and challenges when studying with peers. Studies employing
+interviews and surveys examined what drives students to engage in group
+studies (Hendry et al., 2005; Bradshaw and Hendry, 2006; Dolmans and Schmidt,
+2006) and the challenges they encounter in such settings (Cho et al., 2023a).
+Recent work in CSCW further highlighted that the presence of peers can act as a
+subtle yet effective form of self-regulation by providing ambient social pressure,
+thereby enhancing concentration, even in virtual contexts (Cho et al., 2023b). For
+example, Cho et al. (2023a) investigated students’ hiding and revealing their needs
+during an online group-study session. Additionally, Fang et al. (2022) suggested a
+tool to support students in note-taking in individual and social learning
+environments. Moreover, recent studies demonstrated that integrating synchronous
+interaction tools into study environments can foster a stronger sense of belonging
+and accountability, thereby positively affecting self-regulated learning
+strategies(Wonetal.,2021;Peacocketal.,2020).
+Studies also examined peer learning within specific academic disciplines, such
+as medicine (Ali, 2016; Lovell, 2015) and STEM (Sandoval-Lucero et al., 2012).
+For instance, Lovell (2015) reported that social identity within study groups
+enhances group cohesion, which, in turn, promotes academic engagement. Ali
+(2016)exploredhowmedicalstudentsuseFacebookforsociallearning. Moreover,
+Sandoval-Lucero et al. (2012) conducted a focus group study to understand the
+experiencesofSTEMstudentsparticipatinginself-initiatedgroups.“StudywithMe”communities
+Outside of traditional peer learning, students also engage in self-regulated study
+using “Study with Me” videos, recordings, or live streams of individuals studying
+alone. These videos captured students’ natural study behaviors, providing a sense
+of companionship and motivation for others to study remotely. Recent research
+presented that such videos not only help viewers recreate the ambient pressure of a
+physicalstudyspacebutalsoallowthecustomizationofstudyenvironmentstosuit
+individual needs (Kim and Ryoo, 2024; Lee et al., 2021). Researchers investigated
+students’ motivations and practices in using “Study With Me” videos (Kim and
+Ryoo, 2024; Jhuang et al., 2022; Lee et al., 2021; Wang and Zhang, 2021). For
+example,Leeetal.(2021)foundthatviewersactivelyselectvideosthatprovidethe
+desired level of ambient presence, balancing too much distraction with insufficient
+peerpressure.
+Examining Remote Work Models and Challenges
+While many studies focused on remote study environments, others examined
+remote work experience and proposed design improvements for virtual
+collaboration. Although these studies primarily addressed professional settings,
+insights into remote work practices (such as maintaining engagement and
+managing distractions) can inform the design of virtual study spaces. Schuh et al.
+(2024) taxonomized the remote work concept in organizations. They suggested
+that this classification enables organizations to efficiently design lasting and
+integrated remote work environments. Borse et al. (2022) conducted surveys and
+focus group studies, investigating employees’ motivation and productivity factors
+in remote working, while Kabir et al. (2025) focused on care providers to
+understand their challenges. Although these studies focus on remote work, the
+underlying themes of productivity, ambient presence, and self-monitoring also
+apply to online study settings, further emphasizing the importance of social
+presenceindigitalenvironments.
+Gaps in Prior Studies
+Prior studies showed that students’ experiences and social perceptions of remote
+study rooms remain underexamined. Notably, while much research investigated
+thetechnologicalaspectsofvideoconferencingtoolsandremotework,fewstudies
+have critically examined the nuanced dynamics of virtual study spaces, especially
+regarding how ambient peer presence and personalized study environments
+influence self-regulated learning. Thus, further research is necessary to understand
+how students interact with each other during and after a study session. We aim to
+extend the existing literature by exploring both in-session behaviors and their
+subsequent effects on motivation and focus, thereby addressing these identified
+gaps. With a better understanding of students’ experiences in remote study
+environments,weproposedesignopportunitiesfortechnologytosupportthem.P# Gender Age Major
+P1 Female 22 Theatre
+P2 Male 23 AdvancedMaterialsScienceandEngineering
+P3 Female 21 IntegrativeBiotechnology
+P4 Female 23 History
+P5 Female 23 ImmersiveMediaEngineering
+P6 Female 20 Statistics
+P7 Female 23 ComputingandInformatics
+P8 Male 23 MediaandCommunication
+P9 Female 20 Chemistry
+P10 Female 22 BusinessAdministration
+P11 Male 21 Statistics
+P12 Female 28 AppliedArtificialIntelligence
+P13 Female 23 BusinessAdministration
+TableI.Thedemographicinformationoftheinterviewparticipants..
+Method
+Participants
+To explore the students’ experiences and challenges in online study rooms, we
+conducted semi-structured interviews with 13 participants (see Table I).
+Participants were recruited from university communities in South Korea based on
+the following inclusion criteria: (1) current university students, (2) active
+participation in online study rooms within the last six months, and (3) aged
+between18and64years.
+A total of 28 individuals registered in the study. However, 15 were excluded
+because of infrequent participation in online study rooms (e.g., once every six
+months). Ultimately, 13 students participated in the interviews. The participants
+ranged from 20 to 28 years, with an average age of 22.5 (SD=2.0). Eleven were
+undergraduates, one was a master’s student (P5) and the other was a Ph.D. student
+(P12). Their academic backgrounds varied, with eight majoring in STEM, four in
+businessandsocialsciences,andoneintheatre.
+Interview Study
+All interviews were conducted remotely over Google Meet7 for 35 minutes to 1
+hour. The participants provided verbal consent to record the interviews and
+anonymous data. The participants acknowledged that their participation was
+voluntary. Each participant received approximately 7 euros (10,000 KRW) of cash
+to complete the study. All interviews were recorded, and the researchers
+transcribed them after the study. Once the data analysis was completed, we deleted
+allrecordingsfromthedatabase. Theinterviewsincludedthefollowingtopics.
+7https://meet.google.com1. Engagement and Interactions: Right after joining the online study session,
+are there any aspects that catch your attention(e.g., your face, background,
+microphone, camera angle, number of participants)? When connected to an
+online study session, do you check the screens of other participants during
+yourstudy? Whatisthefrequencyandreasonfordoingso?
+2. Challenges in the Online Study Session: In the study preparation phase,
+what inconveniences did you encounter when using tools to gather
+participants? How do these factors affect the preparation process? What
+difficulties did you face during the study session while studying or using the
+features of the tools? What aspects did you find inconvenient? What
+inconveniences did you experience in the poststudy review phase? And what
+difficultiesorinconveniencesdidyouencounterwiththetoolsyouused?
+Wegatheredstatementsfromtheinterviewtranscriptstoanalyzethequalitative
+data. The transcripts were coded separately. Then, to identify key themes, insights,
+and patterns that repeatedly appeared in the transcripts, researchers conducted
+affinity diagramming on Figma8 and Notion9. We identified notable themes related
+to why and how students participated in online study rooms, and the challenges
+they faced during the study session. The user study was conducted with approval
+from the Institutional Review Board at Sungkyunkwan University in South Korea
+(SKKU2024-11-032-004).
+Results
+We classify our key findings into two primary categories: internal and external.
+Internal factors include the elements within the study session and configurations
+that participants can modify, such as camera usage, peers’ screen displays, sound
+and microphone, filters, and other interactive features. External factors include
+aspects outside the session, including pre- and post-session arrangements,
+fostering intimacy and belonging, facilitating interaction and feedback, and
+promotingsocialresponsibility.
+Internal factors of online study rooms
+We found that participants engaged with features in video-conferencing tools and
+withpeersduringtheonlinestudysession. AsshowninTableII,theinternalfactors
+influencing online study sessions include various aspects such as camera usage,
+screen-relateddistractions,andmicrophonesettings.
+8https://www.figma.com
+9https://www.notion.comInternalFactorsinOnlineStudySessions
+Factor Subcategory Participants(N)
+Cameraturnedon Self-surveillance 11
+Competitivespirit 12
+Peers’movementdistraction 3
+Screen/others
+Peersnotpayingattention 7
+Peers’cameraoff 6
+Privacyconcern 2
+Screen/myown
+Lowself-awareness 11
+Presenceofothers 6
+Microphone
+Distraction 8
+TableII.Internalfactorsinonlinestudysessions.
+Camerausage
+Participants noted that camera usage was one of the most essential features of
+motivation. Eleven participants mentioned that keeping their cameras on and
+showing their appearance to others improved concentration. For example, P12
+mentionedthatawarenessofothersinherstudysessioncreatedtension.
+“IknowifIdon’tkeepmyhandsonthedesk,I’llprobablystartdoingsomething
+else,soItrytopositionthecameratocapturemydeskwithwide-angleview.”(P12)
+In addition, P7 explained that keeping the camera on made her feel a sense of
+self-surveillance:
+“By keeping the camera on, I felt I couldn’t leave my spot and was more
+accountableforfocusing.”(P7)
+Furthermore, most participants adjusted the angle to ensure that their upper
+bodies and materials were visible. This allowed them to monitor their behavior
+better, positively impacting their focus. For example, P2 explained that she and her
+friends set rules to ensure that their faces, upper bodies, and desks were visible to
+the camera. P4 also mentioned that she felt distracted when her hands were not
+visible.
+“If my hands aren’t captured, I know I’ll get distracted, so I make sure my desk
+isinawide-angleview.”(P4)
+Screens-Peers’Screens: MotivationandDistraction
+Watching peer studies during the session motivated the participants by fostering a
+sense of competitive spirit (Cho et al., 2023b), which inspired them to push
+themselves harder. Some participants also monitored their peers’ screens and gave
+verbalreminderswhenothersappeareddistracted. Forexample,P1said,“Inoticed
+my friend getting distracted, so I asked, ‘Why aren’t you studying?’ and
+encouragedherbysaying,‘Let’sgetbacktowork’.”
+However, peer screens also cause distractions. Participants noted that
+movements on peers’ screens, camera-off screens, or inattentive behavior reducedfocus. P1 found it distracting when even one friend seemed disengaged, especially
+ifanotherhadtheircamerasoff.
+“When I kept the screen open while studying, the movement on it caught my
+attentionandbecamedistracting.”(P2)
+Self Screens - Privacy Concerns and Self-Awareness: In contrast, eleven
+participants reported low privacy concerns or self-awareness during online study
+sessions. They mainly checked their screens for technical reasons and were largely
+unaware of their presence. For example, P9 said, “I don’t check my screen except
+when setting it up initially,” and P3 stated, “I only check occasionally to make sure
+my camera is on, but I don’t care about my facial expression or posture.” P8 said
+that while she frequently checked peers’ screens at the beginning, but did not
+recheckherscreenwhensettingitup.
+This sense of ease and reduced self-awareness appears to be associated with
+studying with familiar peers. In contrast, some participants expressed discomfort
+whenstudyingwithstrangersandmentionedtheirprivacyconcerns. P2said,“Since
+I usually connect from home, a certain amount of my private space is exposed, and
+Idon’twanttoshareitwithstrangers.
+Soundandmicrophone
+Participants reported that sounds influenced their focus during the online study
+sessions. Eight participants preferred to mute their microphones to stay focused.
+They were especially mindful of avoiding noise that could distract them from the
+group. For instance, P2 said that muting was a rule to prevent sound from
+interferingwiththeconcentration.
+By contrast, six participants preferred to keep their microphones on. They said
+that background sounds like typing or page flipping enhanced the sense of
+studying together and made communication feel more natural. P13 found these
+soundsmotivating,astheyindicatedthattheirpeerswerealsoworking.
+“It was nice to hear peers working harder, and whenever I had something I
+didn’t know, I could ask and get an answer ... We kept our microphones on so we
+couldheartypingsoundsandknowthateveryonewasstudyingtogether.” (P13)
+Similarly, P12 noted that a moderate level of background noise, if not too loud,
+helped maintain focus and fostered a shared atmosphere. “With just the right
+amount of white noise, I found it easier to focus. Even though we weren’t
+physically together, it felt like we were studying as a group, so most of us kept our
+microphoneson.”
+ToolsandFeatures
+We found that various interactive features, such as hand raising, sound control, and
+emojis,facilitatecommunicationduringonlinestudysessions.
+Filters and appearance: Eight participants stated that they used filters (e.g.,
+backgrounds or face masks) to ease tension and lighten their mood during the
+sessions. They mentioned that the filters were helpful for stress relief. Forexample,P5saidthatsheusedmaskfilterstomakesessionsfunwhentheybecame
+dull.
+However,someparticipantsfoundthefilterdistracting. P8notedthatfacefilters
+and virtual backgrounds drew attention away from studying and reduced the sense
+of shared presence. “It’s hard to recognize the person, and it feels like they’re not
+inthesamespace. Sincethecharacterkeepsappearing,Itrynottouseit.”(P8)
+Similarly, P12 explained, “When other friends’ face changes into a character
+orsomecuteimage,Ifinditdistractingratherthanhelpfulforstudying.”
+Hand-Raising and Sound(Noise) Control: The hand-raising feature allows
+participants to communicate fluently with their peers. Participants often used the
+hand-raising feature before speaking to avoid interrupting their peers with sudden
+noise. Thisapproachmitigatesnoiseandfacilitatesnaturalcommunicationwithout
+surprising peers. For instance, P11 reported using a handraising function before
+turningonthemicrophone.
+“Becuase we’re all studying, turning on the microphone suddenly feels
+disruptive. Therefore, I use the hand-raising feature to signal that I have
+something to say. If it’s okay, I speak right away, or if not, I bring it up during the
+break.”(P11)
+Emojis and reactions: Emojis and reactions provided another way to
+communicate during the session without interruptions. Emojis allowed the
+participants to express their emotions while providing contextual feedback. For
+instance, P8 noted that they frequently employed reactions and emojis to express
+theirfeelings,withoutcompromisingtheirfocus.
+Chatting: Chatting enabled effective communication without interrupting the
+study process. Participants found that text-based tools allowed them to exchange
+questions and feedback without distractions. P9 mentioned that they used personal
+messages to quickly address questions, which helped them maintain their focus on
+thestudysession.
+Time limit: Finally, participants reported that setting a time limit for study
+sessions contributed to maintaining concentration. Some participants used the
+built-in time limit feature in Gooroomee10 to structure sessions and schedule
+regular breaks. Using tools such as Google Meet or Zoom, others established their
+own time-limit rules to manage study session productivity. For example, P3 took
+advantage of the automatic cutoff every 40-50 minutes to concentrate during the
+zoomstudysession.
+Otherfactors
+In addition, participants mentioned that accessing an online study session was an
+important motivating factor. Upon entering the study room, participants reported
+feelinganimmediateobligationtoconcentrate,whichincreasedtheirmotivationto
+participate. Forinstance,P9notedthatmereawarenessofparticipatinginanonline
+studyfacilitatedtheirfocusandmotivation.
+10https://gooroomee.com?lang=enExternalFactorsinOnlineStudySessions
+Factor Subcategory Participants(N)
+Coordinateschedules 6
+Pre-studysession Settingrules 9
+Preparebeforeentering 4
+Commongoal 5
+Senseofintimacy 7
+Intimacy
+Senseofbelonging 4
+Drawbackswithclosefriends 3
+Encouraging 7
+Interaction
+Conversation 2
+Feedbackandrevieweachother 5
+Post-studysession Coordinateschedule 3
+Encouragingeachother 3
+TableIII.Externalfactorsinonlinestudysessions..
+External factors of online study rooms
+Participants also interacted outside the sessions for scheduling and social
+coordination. We found that strong social bonds among members helped sustain
+participation in online study sessions. As shown in Table III, the external factors
+influencing online study sessions included pre-study session preparation, intimacy
+and belonging, and interaction and feedback, with varying numbers of participants
+reportingeachfactor.
+Pre-studysession
+Sixparticipantsscheduledthesessionthroughvarioustools,suchasKakaoTalk’s11
+voting feature, Notion calendar, and When2meet12. However, scheduling through
+group chats is often inefficient, as not everyone responds promptly. Using
+When2meet or voting is time-consuming, requiring everyone is input, which
+makes scheduling cumbersome and inefficient. For instance, P9 noted that
+adjusting the schedule from group chats to chats was inconvenient. Scheduling
+through group chats was challenging because not all participants could respond
+simultaneously.
+In contrast, nine participants said that setting clear rules beforehand helped
+maintain focus. They agreed to turn on their cameras and adjust their angles to
+keep the study activities visible. For instance, P2 explained that she and her peers
+ensured that their faces and upper bodies were shown, and took breaks at agreed
+intervals. In addition, they employed a method of focused study interspersed with
+designatedbreaks.
+11https://www.kakaocorp.com/page/service/service/KakaoTalk
+12https://when2meet.comIntimacyandbelonging
+Ten participants indicated that they experienced an enhanced sense of belonging
+and responsibility when engaging in social interactions with peers. For instance,
+P7 said she could concentrate better when studying with her friends because of the
+comfortableatmospherecomparedwithstudyingwithstrangers.
+Conversely, participants indicated that studying with strangers was challenging
+because of the burden of personal space exposure and lack of social connection.
+Unfamiliarity reduced their sense of accountability and engagement, making it
+harder for them to stay committed. P4 felt overwhelmed when studying an
+unknown individual. Similarly, P11 remarked, ‘When studying with strangers,
+there’s no connection, so it feels like it does not matter whether I stay or leave,’
+and noted that coordinating with unfamiliar members was also difficult. Because
+of these concerns, some participants avoided joining online study sessions with
+strangers.
+Interactionandfeedback
+Participants found that brief conversations with peers during breaks helped them to
+rechargeandrefocus. Italsoenabledhigherconcentrationlevelsandmoreefficient
+learning. For instance, P1 reported feeling more refreshed after engaging in
+dialogue with colleagues, which enabled them to take a more focused approach to
+their academic endeavors. Similarly, P4 mentioned, “After having a short
+conversation during the break, I could focus again,” and P3 shared that discussing
+thestudytopicwithafriendhelpedherrefocus.
+Moreover, participants mentioned mutual support and encouragement during
+and after the study sessions. They noted that recognizing and encouraging each
+other’s efforts was a significant factor in maintaining a positive attitude toward
+learning. P13 indicated that close friends offered encouragement if they struggled
+toconcentrateduringthestudy.
+However,someparticipantsnotedthatwhenconversationsbecametoofrequent
+or extended beyond short breaks, they disrupted the study atmosphere and made it
+harder to refocus. P1 added that extended chatting with close friends sometimes
+madeithardertoconcentrate,leadingtotimeloss.
+Socialresponsibility
+We found that committing to a study schedule with friends and accessing the study
+tomeetthescheduleitselfgaveasenseofbelongingandcompulsion,andplayedan
+important role in the rates of online study session participants. Three participants
+explained that this coercion engenders an environment where they exercise control
+and focus on distractions by making them self-responsible for their study time. For
+instance,P10articulatedthattheobligationtocommitandengageinstudyenabled
+himtoprioritizemomentswhenshecouldnotstudyfreely.“WhenIstudyalone,Ioftensay,“Let’sjustpostponeituntiltomorrow.” IfIask
+my friends to study Zoom, I will be forced to study. So, I think I have no choice but
+touseitinthatsense.”(P10)
+However, some participants noted that not all group members were equally
+committed, and uneven levels of motivation sometimes disrupted the overall focus
+or atmosphere of the study session. In addition, the participants became more
+active in online studies during the exam period. Five participants argued that the
+efficacy of online studies is amplified when shared objectives are present, such as
+duringadesignatedtestperiodwithaclearlydefineddeadline. Theyexplainedthat
+when peers share a common goal, they feel more connected with each other. This
+feeling helps them work better. P4 provides an example of this idea. When people
+share the same goal, they feel that they belong. This encouraged them to
+encourageeachotherandparticipatemoreinthestudy.
+“IstillrememberthosenightswhenmyfriendsandIstayedupstudyingtogether
+onGoogleMeetduringexams.”(P4)
+Post-studysession
+After the study session, participants interacted with peers by giving feedback,
+coordinating the next session, and sharing encouraging words, which helped boost
+motivation. Some suggested that writing and sharing study diaries could help them
+provide feedback and learn from each other. In addition, it was said that sharing
+motivational statements after the study ended positively affected participants’
+motivation.
+Some participants preferred to schedule the next session immediately after the
+study ended, often using group chats or comment pages in real-time. They noted
+that scheduling immediately after the session helped to maintain continuity and
+improve efficiency. For instance, P6 indicated that the subsequent study would be
+conductedinthegroupchatroomimmediatelyfollowingitsconclusion.
+Otherfactors
+Other factors included study duration, group size, and key elements that influenced
+online study. First, although studying online varied, four participants reported
+spending more than two hours in the study sessions. P11 added that he always
+finishedwithintwohoursbecausehelostconcentrationaftermorethantwohours.
+Second,fourparticipantsagreedthatgroupsofthreetofourwouldbesufficient
+for the study session. They explained that a group comprising three or more
+individuals fostered optimal motivation and generated an organic study
+atmosphere. Conversely, a one-on-one study environment disrupts concentration,
+and groups of two or fewer individuals are suboptimal. P4 also noted that a
+one-on-onestudyhinderedhisabilitytoconcentrate.Discussion
+Studying with close peers fosters belonging and focus, although it also presents
+distractions that require a balance. To provide an overview, Table IV summarizes
+the advantages and challenges of the online study session. In this section, we
+explore how relationships between peers impact motivation in online studies,
+describe particular challenges students face in online studies, and present design
+implicationsfortechnologytoaddressthesechallenges.
+Visual and Auditory Presence in Supporting Focus and Engagement
+CameraUseforAccountabilityandSocialEngagement
+All participants reported preferring to keep their cameras during online study
+sessions, as doing so supported sustained focus and heightened their sense of
+responsibility. Being aware that their own screens were visible to others
+encouraged self-surveillance and reduced distractions (Cho et al., 2023b). In
+addition,seeingpeersonthecameraenhancestheirsenseofpresenceandcreatesa
+shared study atmosphere. Some participants reported that watching peers study
+diligently motivated them to stay engaged. These findings are consistent with the
+social presence theory (Short et al., 1976) and social learning theory (Bandura
+et al., 1986), which suggest that visual cues and observing peers’ behavior can
+enhancemotivationandengagement.
+AuditoryPresenceandSharedAtmosphere
+In addition to visual cues, auditory presence fosters a shared atmosphere.
+Participants noted that keeping microphones allowed them to hear subtle
+study-related sounds, such as typing or page flipping, reinforcing their sense of
+co-presence. Such ambient audio has been found to support focus and sense of
+connectioninvirtualsettings(JoandJeon,2022;Nicholsetal.,2000).
+Conversely,whenpeersturnedofftheircamerasorremainedsilent,participants
+felt less motivated and connected, highlighting the role of visibility and audibility
+insustaininggroupengagement(Shortetal.,1976).
+How Close Relationships Enhance Focus/Motivation in Online Study
+This section explores how close peer connections cultivate a heightened sense of
+belongingandresponsibility,drivingastrongerfocusandmotivationinonlinestudy
+environments.
+TheRoleofBelonginginEnhancingFocusandMotivationwithClosePeers
+Most participants reported experiencing a stronger sense of belonging and
+responsibility in online study sessions with their close peers. “Close peers” weretypically friends from the same department or long-term acquaintances. This
+familiarity motivated the participants to engage more actively, such as by
+encouragingdistractedpeersduringsessionsandreinforcingbelonging.
+This sense of social connection contributed to greater follow-through on study
+commitment. Close relationships appear to heighten responsibility in online
+settings, as students studying with familiar peers are more engaged in shared
+goals (Xu et al., 2020). Similarly, Rothstein and Pierotti (1988) noted that people
+are more cooperative and feel a stronger sense of duty in close relationships.
+Participants in our study were also more likely to stay committed to sessions with
+friends than with strangers. In particular, preparing for exams together, especially
+during exam periods, further strengthened students’ sense of responsibility toward
+one another, increasing their motivation and focus. This aligns with Peacock et al.
+(2020), who states that a sense of belonging helps students stay committed to their
+studies and is resilient against stress and anxiety. Additionally, Won et al. (2021)
+highlighted that a sense of belonging influences adaptive help-seeking behaviors
+and plays a critical role in supporting self-regulated learning, ultimately enhancing
+students’ focus and participation. Therefore, fostering a sense of belonging can
+promoteengagementandconcentrationinlearningenvironments.
+ReducedSelf-AwarenessandImprovedFocuswithClosePeers
+Cho et al. (2023b) indicated that excessive self-awareness during virtual study
+sessions emerged when users became overly conscious of their appearance on the
+video and became uncomfortable with the camera, which in turn interfered with
+concentration. However, our findings indicate that participants generally
+experienced low self-awareness during the study sessions when they were familiar
+withtheirpeers.
+Some participants mentioned that they rarely checked their screens or paid
+attention to their appearance during the session. This difference may be
+attributable to the study of familiar peers. Most participants primarily studied their
+closepeers.
+As Franzoi et al. (1985) suggested, individuals feel more at ease and
+self-disclose more freely in close relationships. By contrast, studying with
+unfamiliarpeersmayincreaseself-awarenessandleadtodiscomfort.
+Although research on this topic remains limited, our findings suggest that peer
+familiarity is crucial for shaping self-awareness in online study settings. Future
+studies should explore how social dynamics influences self-perception and
+engagementinvirtuallearningenvironments.
+LightConversationsonFocusDuringStudyBreaks
+The participants’ close relationships enabled casual break-time conversations,
+which helped reduce fatigue and restore focus. As noted earlier, interactions, such
+as light chat and encouragement, were especially effective in helping students
+rechargewithoutdisruptingtheirconcentration.Category Subcategories Details
+AdvantagesofOnlineStudywithCloseFriends
+Senseofintimacy Familiar settings lower anxiety and
+boostfocus.
+Intimacyand
+Senseofbelonging Builds shared responsibility and
+Belonging
+motivation.
+Lowself-awareness Less concern about appearance
+improvesfocus.
+Lowprivacyconcerns Sharing space with friends feels less
+intrusive.
+Highsocialresponsibility Studying together increases
+accountability.
+Encouraging Mutualsupportencouragemotivation.
+Interaction Conversation Brief talks during breaks recharge
+focus.
+Structuredroutine Scheduledsessionsbuildcommitment.
+ChallengesofOnlineStudywithCloseFriends
+Scheduling& Coordinateschedule Difficultyaligningschedules.
+Group Suboptimalgroupsize Toofewmembersloweraccountability
+Composition andinvitechatter.
+Conversation Off-topictalkscanderailfocus.
+Interaction
+Unevenengagement Inconsistentparticipationlowersgroup
+Dynamics
+drive.
+Overuseofinteractivefeatures Excessive emojis or filters distracts
+studying.
+TableIV.Advantagesandchallengesofonlinestudysessionswithclosefriends..
+Prior research suggests that microbreaks, including social interactions, can
+restore energy and reduce fatigue (Albulescu et al., 2022). Such interactions can
+support cognitive recovery if well-managed, although they may also become
+distracting (Hossain et al., 2024). These suggest that incorporating light social
+interactions during breaks may contribute to focus and reducing fatigue in online
+studysessions.
+Challenges students faced during the online study session
+SchedulingDifficulties
+As discussed above, scheduling study sessions often required group agreement via
+tools such as KakaoTalk or When2meet, which participants found to be inefficient.
+While studying with close peers to foster comfort, coordinating schedules still
+demanded effort and often became a source of friction. This suggests that, even in
+informal peer-based settings, difficulties in coordinating schedules may affect
+participants’willingnesstoengageconsistently.DistractionsfromSocialInteractions
+Whileconversationsfosteredasupportiveatmosphere,someparticipantsnotedthat
+it sometimes became excessive, making it difficult to concentrate and leading to
+time being wasted. Although the participants valued social interactions, balancing
+casualconversationswithafocusedstudywasnecessary.
+Uneven engagement is another issue. As noted in the Results, some
+participants observed uneven engagement within the group, with some members
+being highly committed and others being more passive. In some cases,
+less-motivated members contributed to a decline in the overall study atmosphere.
+Additionally, filters and virtual backgrounds are sometimes perceived as
+distracting, particularly during moments requiring sustained attention. Some
+participants noted that face filters could reduce their sense of co-presence by
+making it harder to recognize peers. When others’ faces change into characters or
+playful images, this can lead to laughter and momentarily disrupt focus. Thus,
+whilesuchfeaturesmaylightenmood,theymayhinderfocusifoverused.
+Design Implications
+Our findings suggest that students’ focus, engagement, and sense of responsibility
+in online study environments are shaped by a combination of social and structural
+factorssuch as visual and auditory presence, session rules, peer awareness, and
+opportunities for informal interaction. While existing platforms like StudyStream
+and Gooroomee13 promote participation by connecting users with shared goals,
+they may not fully support the nuanced routines and social cues that contribute to
+effectivepeer-basedstudy.
+To address these gaps, we outlined a set of design implications aimed at
+enhancing virtual study environments. These suggestions focused on fostering
+mutual presence, managing interaction rhythms, and supporting continuity across
+sessions. Rather than prescribing fixed solutions, our goal was to offer possible
+directions for making remote study platforms more socially attuned and
+structurallysupportive.
+TurningontheCameraUponEntry
+Consistentcamerausefosteredparticipants’senseofaccountabilityandmotivation,
+particularly when the sessions involved peer observation. Encouraging students to
+activatetheircamerasatthebeginningofasessionmayhelpreinforcethissenseof
+responsibilityandcontributetoasustainedfocusthroughoutthesession.
+Camera visibility in virtual study rooms fulfills users’ need for enhanced
+presence and self-surveillance, although it must be balanced against privacy
+needs (Cho et al., 2023b). This balance becomes especially important in settings
+where participants are unfamiliar with one another. Such practices are most
+effective when supported by shared norms and expectations of visibility. Platforms
+13https://gooroomee.com/?lang=encould facilitate this by providing gentle camera-on prompts or soft default settings
+along with optional visual filters or blur modes to reduce discomfort. Therefore,
+we recommend that online study platforms and facilitators request or require
+participants to activate their cameras upon entering sessions to humanize the
+interactionandfosterimmediategrouptrust.
+ManagingMicrophone
+Keeping microphones during the study sessions helped some participants stay
+focused and feel a stronger sense of presence, particularly when subtle background
+sounds, such as typing or page-flipping, were audible. These ambient cues appear
+to reinforce a shared sense of studying. However, excessive or irrelevant noise
+oftendisruptsconcentration.
+To address this, we suggest implementing microphone protocols that preserve
+the benefits of ambient audio, while minimizing disruptions. Facilitators may
+consider allowing moderate study-related background sounds while discouraging
+unrelated noise. Platforms can support this by offering ambient audio modes or
+subtle sound filters that enhance desirable cues and suppress distraction.
+Additionally, visual indicators of background presence, such as icons showing
+typing activity, may help maintain social awareness without relying on the voice.
+Managing microphone use in this manner also reflects broader challenges in
+collaborative systems of balancing awareness and interruption (Shen and Sun,
+2002).
+UsingPre-Notifications
+Some participants expressed concern that speaking abruptly, such as turning on a
+microphone without notice, might disturb others. To avoid this, they used
+non-verbal signaling tools like the "raise hand" feature to signal their intention to
+speak14,15.
+This approach gave others time to prepare, helping maintain a smooth study
+flow. Salem and Earle (2000) emphasizes the importance of non-verbal feedback
+in learning environments. Similarly, emojis and chat functions enable brief,
+unobtrusive interactions and feedback. These signals recall early media space
+designs in which non-verbal cues manage transitions between awareness and
+focusedinteractionwithoutcausingunduedisruption(Gaveretal.,1992).
+Werecommendthatresearchersandplatformdesignerssupportpre-notification
+practices, such as non-verbal signaling and timely reminders, to help participants
+prepareforandreduceunnecessarydisruptions.
+14https://support.zoom.com/hc/en/article?id=zm_kb\&sysparm_article=KB0068290
+15https://support.google.com/meet/answer/10159750EncouragingSessionContinuitywithPost-StudySchedulingTools
+Participantsoftencoordinatedthenextstudysessionimmediatelyaftertheprevious
+session, typically via chat. This spontaneous scheduling, while still in the study
+mindset,helpedmaintainmomentumandreducethefrictionofre-coordination. To
+support this behavior, platforms should offer lightweight post-session scheduling
+features, such as quick polls, suggested times, or smart reminders, which appear
+as the session wraps. Integrating these tools seamlessly into the post-study flow
+can reinforce consistency and help sustain long-term participation, particularly in
+peer-drivenstudyenvironments.
+Limitations and Future work
+Our study revealed several facets of students’ experiences in remote study rooms.
+However, this study had certain limitations. First, the small number of interview
+participants may limit the generalizability of our findings to a broader population
+of remote study room users. Additionally, because all participants were recruited
+in South Korea, our results might not reflect users’ experiences from other
+countries or cultural backgrounds. Moreover, as all participants were university
+students in their twenties, our study may not capture the perspectives of older
+adults or individuals with disabilities, such as BLV or hard of hearing, who may
+encounteruniquechallengeswhencommunicatingonline.
+Future research should include a more diverse range of participants, including
+peoplefromvariousregions,cultures,agegroups,andindividualswithdisabilities.
+Broadening the participant base will increase the representativeness of the findings
+and provide valuable insights for designing more inclusive remote-group study
+tools. Additionally, while our study highlights how social presence and peer
+familiarity foster engagement and accountability, future research could explore
+ways to bring similar benefits to groups of unfamiliar participants. In particular,
+lightweight self-disclosure mechanismssuch as sharing names or study goalsmight
+help promote group cohesion and responsibility. Designing such features would
+require careful consideration of users’ privacy preferences and their level of
+controloverwhatisshared.
+Conclusion
+This study employed exploratory qualitative interviews were conducted to
+investigate the students’ experiences using remote study rooms. We conducted
+semi-structured interviews with 13 students to examine their motivations for
+joining remote study sessions and their experiences before, during, and after the
+sessions. Our findings indicate that students actively motivated and supported one
+another throughout the entire study session. We also identified several key
+challenges encountered by the students during remote studying. Based on these
+insights, we propose design implications for technological solutions to mitigatethese challenges. We hope that our lifecycle-oriented approach encourages further
+research within the CSCW community on the motivations and inclusiveness of
+remotestudyenvironments.
+Acknowledgements
+This work was supported by Institute of Information & communications
+Technology Planning & Evaluation (IITP) grant funded by the Korea government
+(MSIT) (No. RS-2023-00254129, Graduate School of Metaverse Convergence
+(Sungkyunkwan University); No. RS-2024-00459638, the Global Scholars
+Invitation Program; No. IITP-2025-RS-2024-00436936, the ITRC (Information
+TechnologyResearchCenter)Program).
+References
+Akter, T., Y. Cha, I. Figueira, S. M. Branham, and A. M. Piper (2023): ‘“If I’m supposed to be
+thefacilitator, Ishouldbethehost”: UnderstandingtheAccessibilityofVideoconferencingfor
+Blind and Low Vision Meeting Facilitators’. In: Proceedings of the 25th International ACM
+SIGACCESSConferenceonComputersandAccessibility.NewYork,NY,USA,Associationfor
+ComputingMachinery.
+Albulescu, P., I. Macsinga, A. Rusu, C. Sulea, A. Bodnaru, and B. T. Tulbure (2022): ‘" Give me
+abreak!"Asystematicreviewandmeta-analysisontheefficacyofmicro-breaksforincreasing
+well-beingandperformance’. PloSone,vol.17,no.8,pp.e0272460.
+Ali, A. (2016): ‘Medical students’ use of Facebook for educational purposes’. Perspectives on
+MedicalEducation,vol.5,no.3,pp.163–169.
+Bandura, A. et al. (1986): ‘Social foundations of thought and action’. Englewood Cliffs, NJ,
+vol.1986,no.23-28,pp.2.
+Borning,A.andM.Travers(1991): ‘Twoapproachestocasualinteractionovercomputerandvideo
+networks’.In:ProceedingsoftheSIGCHIConferenceonHumanFactorsinComputingSystems.
+NewYork,NY,USA,p.13–19,AssociationforComputingMachinery.
+Borse, V., W. Mishra, and G. Loudon (2022): ‘Sorry you’re on mute: Towards determining the
+factors that impact the productivity and job motivation of remote workers and a conceptual
+framework’. In: Proceedings of the 12th Indian Conference on Human-Computer Interaction.
+NewYork,NY,USA,p.47–58,AssociationforComputingMachinery.
+Bradshaw, D. and G. D. Hendry (2006): ‘ANZAHPE: Australian & New Zealand Association for
+HealthProfessionalEducators’. FocusonHealthProfessionalEducation: AMulti-Professional
+Journal,vol.8,no.2,pp.22–31.
+Brubaker,J.R.,G.Venolia,andJ.C.Tang(2012):‘Focusingonsharedexperiences:movingbeyond
+the camera in video communication’. In: Proceedings of the Designing Interactive Systems
+Conference.NewYork,NY,USA,p.96–105,AssociationforComputingMachinery.
+Brush,A.B.,K.M.Inkpen,andK.Tee(2008):‘SPARCS:exploringsharingsuggestionstoenhance
+familyconnectedness’. In: Proceedingsofthe2008ACMConferenceonComputerSupported
+CooperativeWork.NewYork,NY,USA,p.629–638,AssociationforComputingMachinery.Bryld, J. M., L. Schønrock, A.S. Løvlie, and L.Barkhuus (2020): ‘WatchingTogether butApart:
+SharedVideoExperiencesDuringCOVID-19Outbreak’. In: AdjunctProceedingsoftheACM
+InternationalConferenceonInteractiveMediaExperiences(IMX)2020.
+Cao, X., A. Sellen, A. B. Brush, D. Kirk, D. Edge, and X. Ding (2010): ‘Understanding family
+communicationacrosstimezones’. In: Proceedingsofthe2010ACMConferenceonComputer
+Supported Cooperative Work. New York, NY, USA, p. 155–158, Association for Computing
+Machinery.
+Cho,H.,J.Oh,J.Kim,andS.-J.Lee(2020): ‘IShare,YouCare: PrivateStatusSharingandSender-
+Controlled Notifications in Mobile Instant Messaging’. Proc. ACM Hum.-Comput. Interact.,
+vol.4,no.CSCW1.
+Cho,S.,J.Lee,andB.Suh(2023a):‘"IWanttoReveal,butIAlsoWanttoHide"Understandingthe
+Conflict of Revealing and Hiding Needs in Virtual Study Rooms’. Proc. ACM Hum.-Comput.
+Interact.,vol.7,no.CSCW2.
+Cho, S., J. Lee, and B. Suh (2023b): ‘"I Want to Reveal, but I Also Want to Hide" Understanding
+theConflictofRevealingandHidingNeedsinVirtualStudyRooms’. ProceedingsoftheACM
+onHuman-ComputerInteraction,vol.7,no.CSCW2,pp.1–27.
+Das, M., J. Tang, K. E. Ringland, and A. M. Piper (2021): ‘Towards Accessible Remote Work:
+UnderstandingWork-from-HomePracticesofNeurodivergentProfessionals’. Proc.ACMHum.-
+Comput.Interact.,vol.5,no.CSCW1.
+Das,S.,S.Chakraborty,andB.Mitra(2022): ‘ICannotSeeStudentsFocusingonMyPresentation;
+AreTheyFollowingMe? ContinuousMonitoringofStudentEngagementthrough“Stungage”’.
+In:Proceedingsofthe30thACMConferenceonUserModeling,AdaptationandPersonalization.
+NewYork,NY,USA,p.243–253,AssociationforComputingMachinery.
+Díaz,J.,I.Harari,A.P.Amadeo,A.Schiavoni,S.Gómez,andA.Osorio(2022):‘HigherEducation
+andVirtualityfromanInclusionApproach’. In: P.PesadoandG.Gil(eds.): ComputerScience
+–CACIC2021.Cham,pp.78–91,SpringerInternationalPublishing.
+Dolmans,D.H.andH.G.Schmidt(2006): ‘WhatDoWeKnowAboutCognitiveandMotivational
+Effects of Small Group Tutorials in Problem-Based Learning?’. Advances in Health Sciences
+Education,vol.11,no.4,pp.321–336.
+Dyer,R.andJ.Mandernach(2024): ‘ElevenBestPracticestoSupportLearnerswithDisabilitiesin
+theOnlineClassroom’. ELearn,vol.2024,no.1.
+Fang, J., Y. Wang, C.-L. Yang, C. Liu, and H.-C. Wang (2022): ‘Understanding the Effects of
+Structured Note-taking Systems for Video-based Learners in Individual and Social Learning
+Contexts’. Proc.ACMHum.-Comput.Interact.,vol.6,no.GROUP.
+Ferraz, R. and V. Diniz (2021): ‘Study on Accessibility of Videoconferencing Tools on Web
+Platforms’.In:202116thIberianConferenceonInformationSystemsandTechnologies(CISTI).
+pp.1–6.
+Franzoi, S. L., M. H. Davis, and R. D. Young (1985): ‘The effects of private self-consciousness
+andperspectivetakingonsatisfactionincloserelationships.’. Journalofpersonalityandsocial
+psychology,vol.48,no.6,pp.1584.
+Gaver, W., T. Moran, A. MacLean, L. Lövstrand, P. Dourish, K. Carter, and W. Buxton (1992):
+‘Realizing a video environment: EuroPARC’s RAVE system’. In: Proceedings of the
+SIGCHIConferenceonHumanFactorsinComputingSystems.NewYork,NY,USA,p.27–35,
+AssociationforComputingMachinery.Hendry, G. D., S. J. Hyde, and P. Davy (2005): ‘Independent student study groups’. Medical
+education,vol.39,no.7,pp.672–679.
+Herder, E. and M. Gullit (2022): ‘Understanding privacy decisions of homeworkers during video
+conferences’. In: Adjunct Proceedings of the 30th ACM Conference on User Modeling,
+AdaptationandPersonalization.pp.354–358.
+Heshmat, Y. and C. Neustaedter (2021): ‘Family and Friend Communication over Distance in
+Canada During the COVID-19 Pandemic’. In: Proceedings of the 2021 ACM Designing
+Interactive Systems Conference. New York, NY, USA, p. 1–14, Association for Computing
+Machinery.
+Hossain,E.,G.Wadley,N.Berthouze,andA.L.Cox(2024):‘SocialMediaBreaks:AnOpportunity
+for Recovery and Procrastination’. Proceedings of the ACM on Human-Computer Interaction,
+vol.8,no.CSCW1,pp.1–46.
+Jhuang, Y.-C., Y. H. Chiu, H.-J. Lee, Y. T. Lee, G.-Y. Lin, N.-H. Wu, and P.-Y. P. Kuo (2022):
+‘Exploring the Effect of Study with Me on Parasocial Interaction and Learning Productivity:
+Lessons Learned in a Field Study’. In: C. Stephanidis, M. Antona, and S. Ntoa (eds.): HCI
+International2022Posters.Cham,pp.43–49,SpringerInternationalPublishing.
+Jo, H. I. and J. Y. Jeon (2022): ‘Influence of indoor soundscape perception based on audiovisual
+contents on work-related quality with preference and perceived productivity in open-plan
+offices’. BuildingandEnvironment,vol.208,pp.108598.
+Kabir, K. S., J. Cohoon, J. R. Lund, J. M. Chen, A. Metz, and J. Wiese (2025): ‘Balancing Care
+ResponsibilitieswithRemoteWork’. Proc.ACMHum.-Comput.Interact.,vol.9,no.1.
+Kim, D.andD.Ryoo(2024): ‘Exploringself-regulatedlearningandachievementgoalorientation
+inGenerationZthrough“StudywithMe”’. InteractiveLearningEnvironments,vol.0,no.0,pp.
+1–17.
+Kushalnagar,R.S.andC.Vogler(2020):‘TeleconferenceAccessibilityandGuidelinesforDeafand
+HardofHearingUsers’.In:Proceedingsofthe22ndInternationalACMSIGACCESSConference
+onComputersandAccessibility.NewYork,NY,USA,AssociationforComputingMachinery.
+Labrie, A., T. Mok, A. Tang, M. Lui, L. Oehlberg, and L. Poretski (2022): ‘Toward Video-
+Conferencing Tools for Hands-On Activities in Online Teaching’. Proc. ACM Hum.-Comput.
+Interact.,vol.6,no.GROUP.
+Lee, Y., J. J. Y. Chung, J. Y. Song, M. Chang, and J. Kim (2021): ‘Personalizing Ambience and
+Illusionary Presence: How People Use “Study with me” Videos to Create Effective Studying
+Environments’. In: Proceedingsofthe2021CHIConferenceonHumanFactorsinComputing
+Systems.NewYork,NY,USA,AssociationforComputingMachinery.
+Leporini,B.,M.Buzzi,andM.Hersh(2021):‘Distancemeetingsduringthecovid-19pandemic:are
+videoconferencingtoolsaccessibleforblindpeople?’. In:Proceedingsofthe18thInternational
+WebforAllConference.NewYork,NY,USA,AssociationforComputingMachinery.
+Leporini,B.,M.Buzzi,andM.Hersh(2023):‘VideoConferencingTools:ComparativeStudyofthe
+ExperiencesofScreenReaderUsersandtheDevelopmentofMoreInclusiveDesignGuidelines’.
+ACMTrans.Access.Comput.,vol.16,no.1.
+Liu, Z., Z. Zhu, L. Zhu, E. Jiang, X. Hu, K. A. Peppler, and K. Ramani (2024): ‘ClassMeta:
+Designing Interactive Virtual Classmate to Promote VR Classroom Participation’. In:
+Proceedingsofthe2024CHIConferenceonHumanFactorsinComputingSystems.NewYork,
+NY,USA,AssociationforComputingMachinery.Lovell, B. (2015): “We are a tight community’: social groups and social identity in medical
+undergraduates’. Medicaleducation,vol.49,no.10,pp.1016–1027.
+Marion Hersh, B. L. and M. Buzzi (2024): ‘A comparative study of disabled people’s experiences
+with the video conferencing tools Zoom, MS Teams, Google Meet and Skype’. Behaviour &
+InformationTechnology,vol.43,no.15,pp.3777–3796.
+Na,S.,S.Park,J.Jun,H.Jeong,T.Yoo,M.Chun,H.Lee,H.G.Lee,andH.Jung(2023): ‘SUV:
+Students’ Understanding Visualizer to Support Instructors in Synchronous Online Lectures’.
+IEEEAccess,vol.11,pp.88929–88945.
+Najjar, N., A. Stubler, H. Ramaprasad, H. Lipford, and D. Wilson (2022): ‘Evaluating Students’
+Perceptions of Online Learning with 2-D Virtual Spaces’. In: Proceedings of the 53rd ACM
+Technical Symposium on Computer Science Education - Volume 1. New York, NY, USA, p.
+112–118,AssociationforComputingMachinery.
+Nichols,S.,C.Haldane,andJ.R.Wilson(2000): ‘Measurementofpresenceanditsconsequences
+invirtualenvironments’. InternationalJournalofHuman-ComputerStudies,vol.52,no.3,pp.
+471–491.
+Nowak, K., L. Tankelevitch, J. Tang, and S. Rintel (2023): ‘Hear we are: Spatial audio benefits
+perceptions of turn-taking and social presence in video meetings’. In: Proceedings of the 2nd
+annualmeetingofthesymposiumonhuman-computerinteractionforwork.pp.1–10.
+Peacock, S., J. Cowan, L. Irvine, and J. Williams (2020): ‘An exploration into the importance
+of a sense of belonging for online learners’. International Review of Research in Open and
+DistributedLearning,vol.21,no.2,pp.18–35.
+Rothstein, S. I. and R. Pierotti (1988): ‘Distinctions among reciprocal altruism, kin selection,
+and cooperation and a model for the initial evolution of beneficent behavior’. Ethology and
+Sociobiology,vol.9,no.2-4,pp.189–209.
+Rui Xia Ang, J., P. Liu, E. McDonnell, and S. Coppola (2022): ‘“In this online environment,
+we’re limited”: Exploring Inclusive Video Conferencing Design for Signers’. In: Proceedings
+of the 2022 CHI Conference on Human Factors in Computing Systems. New York, NY, USA,
+AssociationforComputingMachinery.
+Salem, B. and N. Earle (2000): ‘Designing a non-verbal language for expressive avatars’. In:
+Proceedings of the third international conference on Collaborative virtual environments. pp.
+93–101.
+Sandoval-Lucero, E., E. Blasius, L. Klingsmith, and C. Waite (2012): ‘Student-Initiated Study
+GroupsforSTEMClassesinCommunityCollegeSettings.’. HigherEducationStudies,vol.2,
+no.2,pp.31–39.
+Schuh,G.,C.Herkenrath,W.Boos,G.Hoeborn,andJ.Boenig(2024): ‘Howtoestablishalasting
+remote work concept in organizations’. In: Proceedings of the 57th Hawaii International
+ConferenceonSystemSciences.pp.767–776.
+Schur, L. A., M. Ameri, and D. Kruse (2020): ‘Telework After COVID: A “Silver Lining” for
+Workers with Disabilities?’. Journal of Occupational Rehabilitation, vol. 30, no. 4, pp. 521–
+536.
+Shen, H. and C. Sun (2002): ‘Flexible notification for collaborative systems’. In: Proceedings of
+the2002ACMConferenceonComputerSupportedCooperativeWork.NewYork,NY,USA,p.
+77–86,AssociationforComputingMachinery.Short,J.,E.Williams,andB.Christie(1976): ‘Thesocialpsychologyoftelecommunications’.
+Utz, S. (2015): ‘The function of self-disclosure on social network sites: Not only intimate, but
+alsopositiveandentertainingself-disclosuresincreasethefeelingofconnection’. Computersin
+HumanBehavior,vol.45,pp.1–10.
+Wang,G.andY.Zhang(2021): ‘From"studywithme"tostudywithyou: howactivitiesofStudy
+WithMelivestreamonBilibilifacilitateSRLcommunity’.
+Won, S., L. C. Hensley, and C. A. Wolters (2021): ‘Brief research report: Sense of belonging
+andacademichelp-seekingasself-regulatedlearning’. TheJournalofexperimentaleducation,
+vol.89,no.1,pp.112–124.
+Xu, X., Z. Yao, and T. S. Teo (2020): ‘Moral obligation in online social interaction: Clicking the
+“like”button’. Information&Management,vol.57,no.7,pp.103249.
+Yarmand, M., J. Solyst, S. Klemmer, and N. Weibel (2021): ‘“It Feels Like I am Talking into a
+Void”: Understanding Interaction Gaps in Synchronous Online Classrooms’. In: Proceedings
+of the 2021 CHI Conference on Human Factors in Computing Systems. New York, NY, USA,
+AssociationforComputingMachinery.
+Zolyomi, A., A. Begel, J. F. Waldern, J. Tang, M. Barnett, E. Cutrell, D. McDuff, S. Andrist, and
+M.R.Morris(2019): ‘ManagingStress: TheNeedsofAutisticAdultsinVideoCalling’. Proc.
+ACMHum.-Comput.Interact.,vol.3,no.CSCW.

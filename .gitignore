@@ -1,0 +1,75 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node / frontend
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.local
+
+# Build / logs
+*.log
+logs/
+build/
+
+# Data and experiment outputs
+/data/
+/results/
+code/models/yolo/experiments/runs/
+code/models/yolo/weights/
+code/backend/*.pt
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.bin
+
+# Archives / datasets
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.7z
+
+# LaTeX intermediate files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.xdv
+

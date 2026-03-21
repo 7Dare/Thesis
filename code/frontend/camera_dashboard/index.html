@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Room AV + YOLO Dashboard</title>
+    <style>
+      :root {
+        --bg: #f4efe5;
+        --card: #fffdf8;
+        --ink: #212121;
+        --muted: #6d6d6d;
+        --line: #e2d9ca;
+        --accent: #116466;
+        --warn: #b5552f;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Noto Serif SC", "Source Serif 4", serif;
+        color: var(--ink);
+        background: radial-gradient(circle at 20% 10%, #ffffff 0%, var(--bg) 65%);
+      }
+      .wrap {
+        max-width: 1180px;
+        margin: 24px auto;
+        padding: 0 16px 32px;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0.3px;
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .control {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(100px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .control input, .control button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        background: #fff;
+      }
+      .control button {
+        cursor: pointer;
+        background: #f8f5ee;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      }
+      .title {
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+      }
+      .video-tile {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: #111;
+      }
+      .video-tile video {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        background: #101010;
+      }
+      .video-label {
+        padding: 6px 8px;
+        font-size: 12px;
+        background: #faf6ef;
+        color: var(--muted);
+      }
+      .status {
+        margin-top: 8px;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .meta {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .hint {
+        margin-top: 8px;
+        color: var(--warn);
+        min-height: 20px;
+        font-size: 13px;
+      }
+      .snapshot {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #faf6ef;
+      }
+      @media (max-width: 980px) {
+        .grid { grid-template-columns: 1fr; }
+        .control { grid-template-columns: repeat(2, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <h1>自习室连麦 + YOLO 监测</h1>
+        <span class="pill" id="connPill">disconnected</span>
+      </div>
+
+      <div class="control">
+        <input id="apiBase" value="http://localhost:8000" />
+        <input id="roomId" value="demo-room" />
+        <input id="userId" value="user-a" />
+        <input id="displayName" value="同学A" />
+        <button id="joinBtn">加入房间</button>
+        <button id="micBtn">开麦</button>
+        <button id="camBtn">关摄像头</button>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <p class="title">音视频连麦（Mesh）</p>
+          <div class="video-grid" id="videoGrid">
+            <div class="video-tile">
+              <video id="localVideo" autoplay playsinline muted></video>
+              <div class="video-label">我（本地预览）</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="title">YOLO 状态</p>
+          <img id="snapshot" class="snapshot" alt="snapshot" />
+          <div class="status" id="statusText">status: -</div>
+          <div class="meta" id="metaText">person_count: - | phone_count: -</div>
+          <div class="hint" id="hintText"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        socket: null,
+        localStream: null,
+        joined: false,
+        micEnabled: false,
+        camEnabled: true,
+        ingestTimer: null,
+        snapshotTimer: null,
+        reconnectTimer: null,
+        peers: new Map(),
+        remoteStreams: new Map(),
+        webrtc: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] },
+      };
+
+      const el = {
+        apiBase: document.getElementById("apiBase"),
+        roomId: document.getElementById("roomId"),
+        userId: document.getElementById("userId"),
+        displayName: document.getElementById("displayName"),
+        joinBtn: document.getElementById("joinBtn"),
+        micBtn: document.getElementById("micBtn"),
+        camBtn: document.getElementById("camBtn"),
+        connPill: document.getElementById("connPill"),
+        localVideo: document.getElementById("localVideo"),
+        videoGrid: document.getElementById("videoGrid"),
+        snapshot: document.getElementById("snapshot"),
+        statusText: document.getElementById("statusText"),
+        metaText: document.getElementById("metaText"),
+        hintText: document.getElementById("hintText"),
+      };
+
+      function wsBase() {
+        return el.apiBase.value.trim().replace(/^http/i, "ws");
+      }
+
+      function setConn(text) {
+        el.connPill.textContent = text;
+      }
+
+      function payloadBase() {
+        return {
+          roomId: el.roomId.value.trim(),
+          userId: el.userId.value.trim(),
+          displayName: el.displayName.value.trim() || "member",
+        };
+      }
+
+      async function loadWebrtcConfig() {
+        try {
+          const res = await fetch(`${el.apiBase.value.trim()}/health`);
+          const json = await res.json();
+          if (json.code === 0 && json.data && json.data.webrtc) {
+            state.webrtc = json.data.webrtc;
+          }
+        } catch (_) {}
+      }
+
+      async function createLocalStream() {
+        if (state.localStream) return state.localStream;
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        stream.getAudioTracks().forEach((t) => { t.enabled = false; });
+        state.micEnabled = false;
+        state.localStream = stream;
+        el.localVideo.srcObject = stream;
+        el.micBtn.textContent = "开麦";
+        return stream;
+      }
+
+      function ensureRemoteTile(userId) {
+        const id = `remote-${userId}`;
+        let tile = document.getElementById(id);
+        if (tile) return tile.querySelector("video");
+        tile = document.createElement("div");
+        tile.className = "video-tile";
+        tile.id = id;
+
+        const video = document.createElement("video");
+        video.autoplay = true;
+        video.playsInline = true;
+
+        const label = document.createElement("div");
+        label.className = "video-label";
+        label.textContent = `远端: ${userId}`;
+
+        tile.appendChild(video);
+        tile.appendChild(label);
+        el.videoGrid.appendChild(tile);
+        return video;
+      }
+
+      function removeRemoteTile(userId) {
+        const tile = document.getElementById(`remote-${userId}`);
+        if (tile) tile.remove();
+      }
+
+      function sendSignal(type, targetUserId, payload) {
+        if (!state.socket || state.socket.readyState !== WebSocket.OPEN) return;
+        const out = { type, payload: payload || {} };
+        if (targetUserId) out.target_user_id = targetUserId;
+        state.socket.send(JSON.stringify(out));
+      }
+
+      async function createPeerConnection(remoteUserId, makeOffer) {
+        if (state.peers.has(remoteUserId)) return state.peers.get(remoteUserId);
+
+        const pc = new RTCPeerConnection(state.webrtc || { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+        const stream = await createLocalStream();
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+        pc.onicecandidate = (ev) => {
+          if (ev.candidate) {
+            sendSignal("ice", remoteUserId, { candidate: ev.candidate });
+          }
+        };
+
+        pc.ontrack = (ev) => {
+          const remoteStream = ev.streams[0];
+          state.remoteStreams.set(remoteUserId, remoteStream);
+          const video = ensureRemoteTile(remoteUserId);
+          video.srcObject = remoteStream;
+        };
+
+        pc.onconnectionstatechange = () => {
+          if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
+            pc.close();
+            state.peers.delete(remoteUserId);
+            state.remoteStreams.delete(remoteUserId);
+            removeRemoteTile(remoteUserId);
+          }
+        };
+
+        state.peers.set(remoteUserId, pc);
+
+        if (makeOffer) {
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          sendSignal("offer", remoteUserId, { sdp: pc.localDescription });
+        }
+
+        return pc;
+      }
+
+      async function handleSignal(msg) {
+        const t = msg.type;
+        const from = msg.from_user_id;
+        const payload = msg.payload || {};
+
+        if (t === "peer_join") {
+          if (from && from !== payloadBase().userId) {
+            await createPeerConnection(from, true);
+          }
+          return;
+        }
+
+        if (t === "peer_leave") {
+          const pc = state.peers.get(from);
+          if (pc) pc.close();
+          state.peers.delete(from);
+          state.remoteStreams.delete(from);
+          removeRemoteTile(from);
+          return;
+        }
+
+        if (t === "offer") {
+          const pc = await createPeerConnection(from, false);
+          if (payload.sdp) {
+            await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            sendSignal("answer", from, { sdp: pc.localDescription });
+          }
+          return;
+        }
+
+        if (t === "answer") {
+          const pc = state.peers.get(from);
+          if (pc && payload.sdp) {
+            await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+          }
+          return;
+        }
+
+        if (t === "ice") {
+          const pc = state.peers.get(from);
+          const candidate = payload.candidate;
+          if (pc && candidate) {
+            try { await pc.addIceCandidate(new RTCIceCandidate(candidate)); } catch (_) {}
+          }
+          return;
+        }
+
+        if (t === "signal_error") {
+          el.hintText.textContent = payload.message || "signal_error";
+        }
+      }
+
+      function connectSignaling() {
+        const p = payloadBase();
+        const url = `${wsBase()}/rooms/${encodeURIComponent(p.roomId)}/signal?user_id=${encodeURIComponent(p.userId)}&display_name=${encodeURIComponent(p.displayName)}`;
+        const ws = new WebSocket(url);
+        state.socket = ws;
+
+        ws.onopen = () => setConn("connected");
+        ws.onmessage = async (ev) => {
+          try {
+            const msg = JSON.parse(ev.data);
+            await handleSignal(msg);
+          } catch (_) {}
+        };
+        ws.onclose = () => {
+          setConn("disconnected");
+          if (state.joined) {
+            clearTimeout(state.reconnectTimer);
+            state.reconnectTimer = setTimeout(connectSignaling, 2000);
+          }
+        };
+        ws.onerror = () => setConn("error");
+      }
+
+      async function uploadFrame() {
+        if (!state.localStream || !el.localVideo.videoWidth) return;
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(el.localVideo, 0, 0, canvas.width, canvas.height);
+
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.75));
+        if (!blob) return;
+
+        const fd = new FormData();
+        const p = payloadBase();
+        fd.append("frame", blob, "frame.jpg");
+        fd.append("room_id", p.roomId);
+        fd.append("user_id", p.userId);
+
+        try {
+          const res = await fetch(`${el.apiBase.value.trim()}/ingest/frame`, { method: "POST", body: fd });
+          const json = await res.json();
+          if (!res.ok || json.code !== 0) {
+            el.hintText.textContent = json.message || "ingest_failed";
+            return;
+          }
+          const d = json.data || {};
+          el.statusText.textContent = `status: ${d.status || "-"}`;
+          el.metaText.textContent = `person_count: ${d.person_count ?? "-"} | phone_count: ${d.phone_count ?? "-"}`;
+          el.hintText.textContent = "";
+        } catch (_) {
+          el.hintText.textContent = "inference_api_error";
+        }
+      }
+
+      function refreshSnapshot() {
+        const ts = Date.now();
+        el.snapshot.src = `${el.apiBase.value.trim()}/snapshot?ts=${ts}`;
+      }
+
+      async function joinRoom() {
+        if (state.joined) return;
+        setConn("connecting");
+        await loadWebrtcConfig();
+        await createLocalStream();
+        connectSignaling();
+        state.joined = true;
+
+        state.ingestTimer = setInterval(uploadFrame, 700);
+        state.snapshotTimer = setInterval(refreshSnapshot, 1200);
+        uploadFrame();
+        refreshSnapshot();
+      }
+
+      function toggleMic() {
+        if (!state.localStream) return;
+        state.micEnabled = !state.micEnabled;
+        state.localStream.getAudioTracks().forEach((t) => { t.enabled = state.micEnabled; });
+        el.micBtn.textContent = state.micEnabled ? "静音" : "开麦";
+      }
+
+      function toggleCam() {
+        if (!state.localStream) return;
+        state.camEnabled = !state.camEnabled;
+        state.localStream.getVideoTracks().forEach((t) => { t.enabled = state.camEnabled; });
+        el.camBtn.textContent = state.camEnabled ? "关摄像头" : "开摄像头";
+      }
+
+      el.joinBtn.addEventListener("click", () => { joinRoom(); });
+      el.micBtn.addEventListener("click", () => { toggleMic(); });
+      el.camBtn.addEventListener("click", () => { toggleCam(); });
+    </script>
+  </body>
+</html>
