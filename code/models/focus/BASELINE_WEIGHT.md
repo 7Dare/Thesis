@@ -4,7 +4,9 @@
 
 - Weight name: `best.pt`
 - Absolute path:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/weights/best.pt`
+  `/home/ryh/project/Thesis/code/models/focus/weights/best.pt`
+- Repository policy:
+  local deployment asset only, not committed to Git
 - Model type: `YOLOv8n-cls`
 - Task: focus classification
 - Output classes:
@@ -70,7 +72,7 @@ Because the dataset is imbalanced, this baseline accuracy should not be interpre
 
 The backend loads this weight through environment variable:
 
-- `FOCUS_WEIGHTS=/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/weights/best.pt`
+- `FOCUS_WEIGHTS=/home/ryh/project/Thesis/code/models/focus/weights/best.pt`
 
 Integrated backend output fields:
 - `focus_label`
@@ -114,9 +116,12 @@ To deploy this weight on another machine, keep:
 Recommended environment variables:
 
 ```bash
-FOCUS_WEIGHTS=/path/to/best.pt
+FOCUS_WEIGHTS=/home/ryh/project/Thesis/code/models/focus/weights/best.pt
 FOCUS_DEVICE=0
 ```
+
+Repository note:
+This project ignores `*.pt` files in Git, so `code/models/focus/weights/best.pt` is expected to exist only on local machines or deployment targets. When cloning the repository on a new machine, place the weight file manually and keep the `FOCUS_WEIGHTS` path pointing to that local file.
 
 If GPU is unavailable:
 

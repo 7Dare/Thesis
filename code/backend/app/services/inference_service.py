@@ -11,13 +11,16 @@ from ultralytics import YOLO
 from app.state.runtime import STATE
 
 
+DEFAULT_FOCUS_WEIGHTS = (
+    Path(__file__).resolve().parents[3] / "models" / "focus" / "weights" / "best.pt"
+)
 YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "yolov8n.pt")
 IMG_SIZE = int(os.getenv("IMG_SIZE", "640"))
 CONF = float(os.getenv("CONF", "0.35"))
 DEVICE = os.getenv("DEVICE", "cpu")
 FOCUS_WEIGHTS = os.getenv(
     "FOCUS_WEIGHTS",
-    "/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/weights/best.pt",
+    str(DEFAULT_FOCUS_WEIGHTS),
 )
 FOCUS_IMG_SIZE = int(os.getenv("FOCUS_IMG_SIZE", "192"))
 FOCUS_DEVICE = os.getenv("FOCUS_DEVICE", DEVICE)
