@@ -1,6 +1,7 @@
 import type {
   CloseRoomReq,
   CloseRoomRes,
+  CurrentActiveRoomRes,
   CreateRoomReq,
   CreateRoomRes,
   JoinByInviteReq,
@@ -20,6 +21,11 @@ export function createRoomApi(req: CreateRoomReq): Promise<CreateRoomRes> {
 
 export function joinByInviteApi(req: JoinByInviteReq): Promise<JoinByInviteRes> {
   return apiPost<JoinByInviteReq, JoinByInviteRes>('/rooms/join-by-invite', req);
+}
+
+export function getCurrentActiveRoomApi(userId: string): Promise<CurrentActiveRoomRes> {
+  const q = new URLSearchParams({ user_id: userId });
+  return apiGet<CurrentActiveRoomRes>(`/rooms/active/current?${q.toString()}`);
 }
 
 export function leaveRoomApi(roomId: string, req: LeaveRoomReq): Promise<LeaveRoomRes> {

@@ -128,3 +128,46 @@ def login_user(login_user_id: str, password: str):
         raise HTTPException(status_code=500, detail=f"login_failed_{driver_name}")
     finally:
         conn.close()
+
+
+def update_user_profile(user_id: str, display_name: str, email: Optional[str]):
+    user_id = user_id.strip()
+    normalized_display_name = display_name.strip()
+    normalized_email = (email or "").strip().lower() or None
+    if not user_id or not normalized_display_name:
+        raise HTTPException(status_code=400, detail="invalid_update_profile_payload")
+
+    driver_name, conn = _get_conn()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE users
+            SET display_name = %s, email = %s
+            WHERE user_id::text = %s
+            RETURNING user_id, login_user_id, display_name, email, updated_at
+            """,
+            (normalized_display_name, normalized_email, user_id),
+        )
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="user_not_found")
+        conn.commit()
+        return {
+            "user_id": str(row[0]),
+            "login_user_id": row[1],
+            "display_name": row[2],
+            "email": row[3],
+            "updated_at": row[4].isoformat() if row[4] else None,
+        }
+    except HTTPException:
+        conn.rollback()
+        raise
+    except Exception as exc:
+        conn.rollback()
+        msg = str(exc).lower()
+        if "users_email_key" in msg or ("email" in msg and "duplicate" in msg):
+            raise HTTPException(status_code=409, detail="email_exists")
+        raise HTTPException(status_code=500, detail=f"update_profile_failed_{driver_name}")
+    finally:
+        conn.close()

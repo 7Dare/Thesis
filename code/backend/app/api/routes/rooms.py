@@ -5,6 +5,7 @@ from app.services.room_service import (
     check_room_resumable,
     close_room,
     create_room,
+    get_current_active_room,
     get_room,
     get_room_study_time,
     join_by_invite,
@@ -46,6 +47,12 @@ def create_room_api(req: CreateRoomReq):
 @router.post("/rooms/join-by-invite")
 def join_by_invite_api(req: JoinByInviteReq):
     data = join_by_invite(req.user_id, req.invite_code, req.display_name)
+    return success(data=data)
+
+
+@router.get("/rooms/active/current")
+def current_active_room_api(user_id: str = Query(min_length=1, max_length=64)):
+    data = get_current_active_room(user_id)
     return success(data=data)
 
 

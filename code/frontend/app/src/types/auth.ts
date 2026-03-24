@@ -25,3 +25,17 @@ export interface LoginRes {
   email: string | null;
   message: string;
 }
+
+export interface UpdateProfileReq {
+  user_id: string;
+  display_name: string;
+  email?: string;
+}
+
+export interface UpdateProfileRes {
+  user_id: string;
+  login_user_id: string;
+  display_name: string;
+  email: string | null;
+  updated_at: string | null;
+}

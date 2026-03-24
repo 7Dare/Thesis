@@ -1,6 +1,13 @@
-import type { LoginReq, LoginRes, RegisterReq, RegisterRes } from '@/types/auth';
+import type {
+  LoginReq,
+  LoginRes,
+  RegisterReq,
+  RegisterRes,
+  UpdateProfileReq,
+  UpdateProfileRes,
+} from '@/types/auth';
 
-import { apiPostForm } from './http';
+import { apiPost, apiPostForm } from './http';
 
 export function registerApi(req: RegisterReq): Promise<RegisterRes> {
   return apiPostForm<RegisterRes>('/auth/register', {
@@ -16,4 +23,8 @@ export function loginApi(req: LoginReq): Promise<LoginRes> {
     login_user_id: req.login_user_id,
     password: req.password,
   });
+}
+
+export function updateProfileApi(req: UpdateProfileReq): Promise<UpdateProfileRes> {
+  return apiPost<UpdateProfileReq, UpdateProfileRes>('/auth/profile', req);
 }

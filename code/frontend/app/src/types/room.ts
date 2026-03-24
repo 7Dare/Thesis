@@ -75,6 +75,18 @@ export interface ResumeCheckRes {
   is_member: boolean;
 }
 
+export interface CurrentActiveRoomRes {
+  room_id: string;
+  room_name: string;
+  host_user_id: string;
+  status: string;
+  started_at: string;
+  ends_at: string;
+  invite_code: string;
+  role: string;
+  joined_at: string;
+}
+
 export interface StudyTimeMember {
   user_id: string;
   display_name: string;

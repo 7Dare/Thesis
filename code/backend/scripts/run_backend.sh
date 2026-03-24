@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="/home/ryh/thesis/code/backend"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="$ROOT_DIR/.env"
 YOLOV8_PYTHON="/home/ryh/miniconda3/envs/yolov8/bin/python"
+LOCAL_PG_CTL="/home/ryh/miniconda3/bin/pg_ctl"
+LOCAL_PSQL="/home/ryh/miniconda3/bin/psql"
+LOCAL_PGDATA="${HOME}/pgsql-data"
 ENABLE_RELOAD="${ENABLE_RELOAD:-0}"
 
 if [[ ! -f "$ENV_FILE" ]]; then
@@ -66,8 +70,18 @@ fi
 
 cd "$ROOT_DIR"
 echo "[INFO] Using python: $PY_BIN"
-echo "[INFO] Starting PostgreSQL service"
-sudo service postgresql start
+echo "[INFO] Ensuring PostgreSQL is available"
+if [[ -x "$LOCAL_PG_CTL" && -d "$LOCAL_PGDATA" ]]; then
+  if "$LOCAL_PG_CTL" -D "$LOCAL_PGDATA" status >/dev/null 2>&1; then
+    echo "[INFO] Local PostgreSQL is already running"
+  else
+    echo "[INFO] Starting local PostgreSQL from $LOCAL_PGDATA"
+    "$LOCAL_PG_CTL" -D "$LOCAL_PGDATA" -l "$LOCAL_PGDATA/postgres.log" start
+  fi
+else
+  echo "[INFO] Falling back to system PostgreSQL service"
+  sudo service postgresql start
+fi
 echo "[INFO] Starting backend at http://0.0.0.0:8000"
 if [[ "$ENABLE_RELOAD" == "1" ]]; then
   echo "[INFO] Uvicorn reload mode: ON"

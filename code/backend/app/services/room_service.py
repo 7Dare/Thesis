@@ -483,6 +483,71 @@ def get_room(room_id: str) -> Dict:
         conn.close()
 
 
+def get_current_active_room(user_id: str) -> Dict:
+    user_id = user_id.strip()
+    now = _now()
+
+    conn = _get_conn()
+    try:
+        cur = conn.cursor()
+
+        if not _user_exists(cur, user_id):
+            raise HTTPException(status_code=404, detail="user_not_found")
+
+        cur.execute(
+            """
+            SELECT
+                sr.room_id::text,
+                sr.room_name,
+                sr.host_user_id::text,
+                sr.status,
+                sr.started_at,
+                sr.ends_at,
+                sr.invite_code,
+                rm.role,
+                rm.joined_at
+            FROM room_memberships rm
+            JOIN study_rooms sr ON sr.room_id = rm.room_id
+            WHERE rm.user_id::text = %s
+              AND rm.left_at IS NULL
+              AND sr.status = 'active'
+            ORDER BY rm.joined_at DESC
+            LIMIT 1
+            FOR UPDATE OF sr, rm
+            """,
+            (user_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="active_room_not_found")
+
+        room_id, room_name, host_user_id, status, started_at, ends_at, invite_code, role, joined_at = row
+        if _close_if_expired(cur, room_id, ends_at, now):
+            conn.commit()
+            raise HTTPException(status_code=404, detail="active_room_not_found")
+
+        conn.commit()
+        return {
+            "room_id": room_id,
+            "room_name": room_name,
+            "host_user_id": host_user_id,
+            "status": status,
+            "started_at": _to_iso(started_at),
+            "ends_at": _to_iso(ends_at),
+            "invite_code": invite_code,
+            "role": role,
+            "joined_at": _to_iso(joined_at),
+        }
+    except HTTPException:
+        conn.rollback()
+        raise
+    except Exception:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="room_active_current_failed")
+    finally:
+        conn.close()
+
+
 def ensure_room_member_for_signal(room_id: str, user_id: str) -> str:
     now = _now()
     conn = _get_conn()
