@@ -146,11 +146,29 @@ onBeforeUnmount(() => {
 
 <template>
   <article class="card">
-    <h2>YOLO 状态</h2>
+    <h2>推理状态</h2>
     <p class="subtitle">
       status: {{ inferenceStore.status }} | person: {{ inferenceStore.personCount }} | phone:
       {{ inferenceStore.phoneCount }}
     </p>
+    <div class="inference-metrics">
+      <div class="metric-chip">
+        <span class="metric-label">专注标签</span>
+        <strong class="metric-value">{{ inferenceStore.focusLabel }}</strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">专注分数</span>
+        <strong class="metric-value">
+          {{ inferenceStore.focusScore === null ? '-' : inferenceStore.focusScore.toFixed(4) }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">分类器状态</span>
+        <strong class="metric-value">
+          {{ inferenceStore.focusEnabled ? 'enabled' : 'disabled' }}
+        </strong>
+      </div>
+    </div>
     <p class="subtitle">ts: {{ inferenceStore.ts ?? '-' }}</p>
     <p v-if="inferenceStore.lastError" class="tip tip-error">{{ inferenceStore.lastError }}</p>
 

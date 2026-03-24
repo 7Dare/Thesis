@@ -1,5 +1,6 @@
 import os
 import time
+from pathlib import Path
 from typing import Dict, List
 
 import cv2
@@ -14,6 +15,12 @@ YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "yolov8n.pt")
 IMG_SIZE = int(os.getenv("IMG_SIZE", "640"))
 CONF = float(os.getenv("CONF", "0.35"))
 DEVICE = os.getenv("DEVICE", "cpu")
+FOCUS_WEIGHTS = os.getenv(
+    "FOCUS_WEIGHTS",
+    "/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/weights/best.pt",
+)
+FOCUS_IMG_SIZE = int(os.getenv("FOCUS_IMG_SIZE", "192"))
+FOCUS_DEVICE = os.getenv("FOCUS_DEVICE", DEVICE)
 PERSON_CLASS_ID = int(os.getenv("PERSON_CLASS_ID", "0"))
 PHONE_CLASS_ID = int(os.getenv("PHONE_CLASS_ID", "67"))
 PHONE_FRAMES_TRIGGER = int(os.getenv("PHONE_FRAMES_TRIGGER", "3"))
@@ -25,6 +32,21 @@ def load_model() -> YOLO:
         if STATE.model is None:
             STATE.model = YOLO(YOLO_WEIGHTS)
     return STATE.model
+
+
+def load_focus_model() -> YOLO | None:
+    weights_path = Path(FOCUS_WEIGHTS)
+    if not weights_path.exists():
+        with STATE.lock:
+            STATE.focus_enabled = False
+        return None
+
+    with STATE.focus_model_lock:
+        if STATE.focus_model is None:
+            STATE.focus_model = YOLO(str(weights_path))
+        with STATE.lock:
+            STATE.focus_enabled = True
+    return STATE.focus_model
 
 
 def _status_from_counts(person_count: int, phone_count: int) -> str:
@@ -55,6 +77,35 @@ def _stabilize_status(raw_status: str) -> str:
     return STATE.stable_status
 
 
+def _classify_focus(frame: np.ndarray, has_person: bool) -> Dict:
+    if not has_person:
+        return {"focus_label": "no_person", "focus_score": 0.0, "focus_enabled": False}
+
+    model = load_focus_model()
+    if model is None:
+        return {"focus_label": "unavailable", "focus_score": 0.0, "focus_enabled": False}
+
+    result = model.predict(
+        source=frame,
+        imgsz=FOCUS_IMG_SIZE,
+        device=FOCUS_DEVICE,
+        verbose=False,
+    )[0]
+    probs = getattr(result, "probs", None)
+    if probs is None:
+        return {"focus_label": "unknown", "focus_score": 0.0, "focus_enabled": True}
+
+    top1_idx = int(probs.top1)
+    top1_conf = float(probs.top1conf.item() if hasattr(probs.top1conf, "item") else probs.top1conf)
+    names = getattr(result, "names", {}) or {}
+    label = names.get(top1_idx, str(top1_idx))
+    return {
+        "focus_label": label,
+        "focus_score": round(top1_conf, 4),
+        "focus_enabled": True,
+    }
+
+
 def infer_frame(frame: np.ndarray) -> Dict:
     model = load_model()
     result = model.predict(source=frame, imgsz=IMG_SIZE, conf=CONF, device=DEVICE, verbose=False)[0]
@@ -76,6 +127,7 @@ def infer_frame(frame: np.ndarray) -> Dict:
 
     raw_status = _status_from_counts(person_count, phone_count)
     stable_status = _stabilize_status(raw_status)
+    focus = _classify_focus(frame, has_person=person_count > 0)
 
     annotated = frame.copy()
     for d in dets:
@@ -100,6 +152,16 @@ def infer_frame(frame: np.ndarray) -> Dict:
         2,
         cv2.LINE_AA,
     )
+    cv2.putText(
+        annotated,
+        f"focus={focus['focus_label']} score={focus['focus_score']:.2f}",
+        (12, 56),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.65,
+        (255, 255, 255),
+        2,
+        cv2.LINE_AA,
+    )
 
     now = time.time()
     with STATE.lock:
@@ -109,6 +171,9 @@ def infer_frame(frame: np.ndarray) -> Dict:
         STATE.stable_status = stable_status
         STATE.person_count = person_count
         STATE.phone_count = phone_count
+        STATE.focus_label = str(focus["focus_label"])
+        STATE.focus_score = float(focus["focus_score"])
+        STATE.focus_enabled = bool(focus["focus_enabled"])
 
     return {
         "status": stable_status,
@@ -117,6 +182,9 @@ def infer_frame(frame: np.ndarray) -> Dict:
         "using_phone": person_count > 0 and phone_count > 0,
         "person_count": person_count,
         "phone_count": phone_count,
+        "focus_label": focus["focus_label"],
+        "focus_score": focus["focus_score"],
+        "focus_enabled": focus["focus_enabled"],
         "ts": now,
     }
 
@@ -147,6 +215,9 @@ def get_status() -> Dict:
             "using_phone": STATE.person_count > 0 and STATE.phone_count > 0,
             "person_count": STATE.person_count,
             "phone_count": STATE.phone_count,
+            "focus_label": STATE.focus_label,
+            "focus_score": STATE.focus_score,
+            "focus_enabled": STATE.focus_enabled,
             "ts": STATE.last_ts,
         }
 

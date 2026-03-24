@@ -10,7 +10,7 @@ from app.api.routes.rooms import router as rooms_router
 from app.api.routes.signaling import router as signaling_router
 from app.api.routes.user_stats import router as user_stats_router
 from app.core.error_codes import get_error_message
-from app.services.inference_service import load_model
+from app.services.inference_service import load_focus_model, load_model
 from app.utils.response import error
 
 
@@ -55,3 +55,4 @@ async def generic_exception_handler(_: Request, __: Exception):
 @APP.on_event("startup")
 def _startup() -> None:
     load_model()
+    load_focus_model()

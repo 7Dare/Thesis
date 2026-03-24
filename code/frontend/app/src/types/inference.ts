@@ -7,6 +7,9 @@ export interface IngestFrameRes {
   using_phone: boolean;
   person_count: number;
   phone_count: number;
+  focus_label?: string;
+  focus_score?: number;
+  focus_enabled?: boolean;
   ts: number;
 }
 
@@ -18,6 +21,9 @@ export interface InferenceStatusRes {
   using_phone?: boolean;
   person_count?: number;
   phone_count?: number;
+  focus_label?: string;
+  focus_score?: number;
+  focus_enabled?: boolean;
   ts?: number;
   [key: string]: unknown;
 }
