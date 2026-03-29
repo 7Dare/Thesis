@@ -291,7 +291,7 @@ export interface ApiError {
 
 ## 10. 假设与默认值
 
-1. 使用现有目录 `~/thesis/code/frontend`，不创建 `fronted`。
+1. 使用现有目录 `~/Thesis/code/frontend`，不创建 `fronted`。
 2. 一期前端按 `Vue3 + TS + Vite` 实施。
 3. 本文档覆盖架构、页面、状态、接口映射，不含详细排期。
 4. `frontend/app` 项目骨架与首批页面已完成，后续按实现计划继续补齐音视频与 YOLO。

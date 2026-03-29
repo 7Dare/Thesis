@@ -25,14 +25,14 @@ def parse_args() -> argparse.Namespace:
         "--source",
         type=Path,
         default=Path(
-            "/home/ryh/thesis/data/raw/0.355k_university_yolo_Dataset/0.355k_university_yolo_Dataset"
+            "/home/ryh/Thesis/data/raw/0.355k_university_yolo_Dataset/0.355k_university_yolo_Dataset"
         ),
         help="Source YOLO dataset root",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("/home/ryh/thesis/data/processed/focus_binary"),
+        default=Path("/home/ryh/Thesis/data/processed/focus_binary"),
         help="Output YOLO dataset root",
     )
     parser.add_argument(

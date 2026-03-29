@@ -8,7 +8,7 @@ def _default_data_yaml(root: Path) -> Path:
 
 
 def parse_args() -> argparse.Namespace:
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     parser = argparse.ArgumentParser(description="Train YOLO with configurable dataset.")
     parser.add_argument("--data", type=Path, default=_default_data_yaml(root), help="Path to data.yaml")
     parser.add_argument("--weights", type=Path, default=root / "code/models/yolo/weights/yolov8n.pt", help="Initial weights")
@@ -23,7 +23,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     data_yaml = args.data if args.data.is_absolute() else root / args.data
     weights = args.weights if args.weights.is_absolute() else root / args.weights
     project = args.project if args.project.is_absolute() else root / args.project

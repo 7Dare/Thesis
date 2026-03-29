@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/home/ryh/thesis"
+ROOT="/home/ryh/Thesis"
 API_DIR="$ROOT/code/backend/camera_api"
 FRONT_DIR="$ROOT/code/frontend/camera_dashboard"
 

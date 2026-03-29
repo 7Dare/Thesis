@@ -42,7 +42,7 @@ SOURCE = os.getenv("SOURCE", "0")
 INPUT_MODE = os.getenv("INPUT_MODE", "push" if SOURCE.strip().lower() == "push" else "pull").strip().lower()
 WEIGHTS = os.getenv(
     "YOLO_WEIGHTS",
-    "/home/ryh/thesis/results/yolo_demo3/weights/best.pt",
+    "/home/ryh/Thesis/results/yolo_demo3/weights/best.pt",
 )
 IMG_SIZE = int(os.getenv("IMG_SIZE", "640"))
 CONF = float(os.getenv("CONF", "0.10"))

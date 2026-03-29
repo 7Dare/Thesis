@@ -9,7 +9,7 @@ VIDEO_EXTS = {".mp4", ".avi", ".mov", ".mkv", ".webm"}
 
 
 def parse_args() -> argparse.Namespace:
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     parser = argparse.ArgumentParser(description="Extract frames from DAiSEE videos into per-clip folders.")
     parser.add_argument(
         "--videos-root",

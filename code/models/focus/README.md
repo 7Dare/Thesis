@@ -31,7 +31,7 @@ Suggested local layout:
 Example commands:
 
 ```bash
-/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/thesis/code/models/focus/scripts/extract_daisee_frames.py
-/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/thesis/code/models/focus/scripts/prepare_daisee_focus_cls.py --link-images
-/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/thesis/code/models/focus/scripts/train_focus_cls.py --device cpu
+/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/Thesis/code/models/focus/scripts/extract_daisee_frames.py
+/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/Thesis/code/models/focus/scripts/prepare_daisee_focus_cls.py --link-images
+/home/ryh/miniconda3/envs/yolov8/bin/python /home/ryh/Thesis/code/models/focus/scripts/train_focus_cls.py --device cpu
 ```

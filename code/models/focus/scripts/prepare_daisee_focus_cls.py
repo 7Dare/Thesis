@@ -16,7 +16,7 @@ DEFAULT_CLASS_MAP = {
 
 
 def parse_args() -> argparse.Namespace:
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     parser = argparse.ArgumentParser(
         description="Prepare a DAiSEE-based frame classification dataset for focus modeling."
     )

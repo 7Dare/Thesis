@@ -6,7 +6,7 @@ window, and exposes a small HTTP API.
 ## Run
 
 ```bash
-export YOLO_WEIGHTS=/home/ryh/thesis/results/yolo_demo3/weights/best.pt
+export YOLO_WEIGHTS=/home/ryh/Thesis/results/yolo_demo3/weights/best.pt
 export SOURCE=0
 export DEVICE=0
 export SHOW_WINDOW=1

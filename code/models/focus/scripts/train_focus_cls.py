@@ -6,7 +6,7 @@ from ultralytics import YOLO
 
 
 def parse_args() -> argparse.Namespace:
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     parser = argparse.ArgumentParser(description="Train a focus classification baseline with Ultralytics.")
     parser.add_argument(
         "--data",
@@ -32,7 +32,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    root = Path("/home/ryh/thesis")
+    root = Path("/home/ryh/Thesis")
     data_dir = args.data if args.data.is_absolute() else root / args.data
     weights = args.weights if args.weights.is_absolute() else root / args.weights
     project = args.project if args.project.is_absolute() else root / args.project
@@ -46,7 +46,7 @@ def main() -> None:
     if not weights.exists():
         raise FileNotFoundError(
             f"classification weights not found: {weights}. "
-            "Place yolov8n-cls.pt in /home/ryh/thesis/code/models/focus/weights/"
+            "Place yolov8n-cls.pt in /home/ryh/Thesis/code/models/focus/weights/"
         )
 
     model = YOLO(str(weights))

@@ -10,7 +10,7 @@ def parse_args() -> argparse.Namespace:
         "--data",
         type=Path,
         default=Path(
-            "/home/ryh/thesis/data/raw/0.355k_university_yolo_Dataset/0.355k_university_yolo_Dataset/data.yaml"
+            "/home/ryh/Thesis/data/raw/0.355k_university_yolo_Dataset/0.355k_university_yolo_Dataset/data.yaml"
         ),
         help="Path to data.yaml",
     )

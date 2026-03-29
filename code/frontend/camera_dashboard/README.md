@@ -8,7 +8,7 @@ Static dashboard for:
 ## Run
 
 ```bash
-cd /home/ryh/thesis/code/frontend/camera_dashboard
+cd /home/ryh/Thesis/code/frontend/camera_dashboard
 python3 -m http.server 8080
 ```
 

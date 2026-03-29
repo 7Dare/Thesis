@@ -4,7 +4,7 @@
 
 - Weight name: `best.pt`
 - Absolute path:
-  `/home/ryh/project/Thesis/code/models/focus/weights/best.pt`
+  `/home/ryh/Thesis/code/models/focus/weights/best.pt`
 - Repository policy:
   local deployment asset only, not committed to Git
 - Model type: `YOLOv8n-cls`
@@ -29,7 +29,7 @@ This model is intended to be integrated with the backend inference pipeline alon
 
 - Dataset source: `DAiSEE`
 - Training data root:
-  `/home/ryh/thesis/data/processed/daisee_focus_cls`
+  `/home/ryh/Thesis/data/processed/daisee_focus_cls`
 - Label mapping:
   - engagement `0-1` -> `low_focus`
   - engagement `2-3` -> `high_focus`
@@ -40,7 +40,7 @@ Final successful baseline run:
 
 - Run name: `focus_cls_daisee_small_v1_gpu_b8_i192`
 - Results directory:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192`
+  `/home/ryh/Thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192`
 - Device: `CUDA:0`
 - GPU: `NVIDIA GeForce RTX 3060 Laptop GPU`
 - Epochs: `5`
@@ -50,13 +50,13 @@ Final successful baseline run:
 
 Related files:
 - args:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/args.yaml`
+  `/home/ryh/Thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/args.yaml`
 - metrics:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/results.csv`
+  `/home/ryh/Thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/results.csv`
 - curve:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/results.png`
+  `/home/ryh/Thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/results.png`
 - confusion matrix:
-  `/home/ryh/thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/confusion_matrix.png`
+  `/home/ryh/Thesis/results/focus_cls_daisee_small_v1_gpu_b8_i192/confusion_matrix.png`
 
 ## 5. Validation Result
 
@@ -72,7 +72,7 @@ Because the dataset is imbalanced, this baseline accuracy should not be interpre
 
 The backend loads this weight through environment variable:
 
-- `FOCUS_WEIGHTS=/home/ryh/project/Thesis/code/models/focus/weights/best.pt`
+- `FOCUS_WEIGHTS=/home/ryh/Thesis/code/models/focus/weights/best.pt`
 
 Integrated backend output fields:
 - `focus_label`
@@ -80,9 +80,9 @@ Integrated backend output fields:
 - `focus_enabled`
 
 Relevant backend files:
-- `/home/ryh/thesis/code/backend/app/services/inference_service.py`
-- `/home/ryh/thesis/code/backend/app/state/runtime.py`
-- `/home/ryh/thesis/code/backend/app/main.py`
+- `/home/ryh/Thesis/code/backend/app/services/inference_service.py`
+- `/home/ryh/Thesis/code/backend/app/state/runtime.py`
+- `/home/ryh/Thesis/code/backend/app/main.py`
 
 ## 7. Frontend Integration
 
@@ -95,9 +95,9 @@ The frontend inference panel displays:
 - classifier enabled state
 
 Relevant frontend files:
-- `/home/ryh/thesis/code/frontend/app/src/components/inference/InferencePanel.vue`
-- `/home/ryh/thesis/code/frontend/app/src/stores/inference.ts`
-- `/home/ryh/thesis/code/frontend/app/src/types/inference.ts`
+- `/home/ryh/Thesis/code/frontend/app/src/components/inference/InferencePanel.vue`
+- `/home/ryh/Thesis/code/frontend/app/src/stores/inference.ts`
+- `/home/ryh/Thesis/code/frontend/app/src/types/inference.ts`
 
 ## 8. Deployment Notes
 
