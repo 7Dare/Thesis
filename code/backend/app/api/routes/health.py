@@ -9,7 +9,10 @@ from app.utils.response import success
 
 router = APIRouter(tags=["health"])
 DEFAULT_FOCUS_WEIGHTS = (
-    Path(__file__).resolve().parents[4] / "models" / "focus" / "weights" / "best.pt"
+    Path(__file__).resolve().parents[4] / "models" / "yolo" / "weights" / "best_model.pth"
+)
+DEFAULT_YOLO_WEIGHTS = (
+    Path(__file__).resolve().parents[4] / "models" / "yolo" / "weights" / "yolov8n.pt"
 )
 
 
@@ -17,7 +20,7 @@ DEFAULT_FOCUS_WEIGHTS = (
 def health():
     data = {
         "ok": True,
-        "weights": os.getenv("YOLO_WEIGHTS", "yolov8n.pt"),
+        "weights": os.getenv("YOLO_WEIGHTS", str(DEFAULT_YOLO_WEIGHTS)),
         "focus_weights": os.getenv(
             "FOCUS_WEIGHTS",
             str(DEFAULT_FOCUS_WEIGHTS),

@@ -168,6 +168,32 @@ onBeforeUnmount(() => {
           {{ inferenceStore.focusEnabled ? 'enabled' : 'disabled' }}
         </strong>
       </div>
+      <div class="metric-chip">
+        <span class="metric-label">瞬时走神</span>
+        <strong class="metric-value">{{ inferenceStore.distracted ? 'yes' : 'no' }}</strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">3秒走神率</span>
+        <strong class="metric-value">
+          {{
+            inferenceStore.distractionRate === null
+              ? '-'
+              : `${Math.round(inferenceStore.distractionRate * 100)}%`
+          }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">后端干预</span>
+        <strong class="metric-value">
+          {{ inferenceStore.interventionRequired ? 'triggered' : 'waiting' }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">窗口帧数</span>
+        <strong class="metric-value">
+          {{ inferenceStore.focusWindowFrames }} / {{ inferenceStore.focusWindowSeconds ?? 3 }}s
+        </strong>
+      </div>
     </div>
     <p class="subtitle">ts: {{ inferenceStore.ts ?? '-' }}</p>
     <p v-if="inferenceStore.lastError" class="tip tip-error">{{ inferenceStore.lastError }}</p>

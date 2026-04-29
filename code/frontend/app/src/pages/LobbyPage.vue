@@ -2,10 +2,16 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { createRoomApi, getCurrentActiveRoomApi, joinByInviteApi, resumeCheckApi } from '@/services'
+import {
+  createRoomApi,
+  getCurrentActiveRoomApi,
+  getRoomRecommendationsApi,
+  joinByInviteApi,
+  resumeCheckApi,
+} from '@/services'
 import { useAuthStore } from '@/stores/auth'
 import { useRoomStore } from '@/stores/room'
-import type { CurrentActiveRoomRes } from '@/types/room'
+import type { CurrentActiveRoomRes, RecommendedRoom, RoomRecommendationProfile } from '@/types/room'
 import { isApiClientError } from '@/utils/error'
 
 const router = useRouter()
@@ -16,8 +22,13 @@ const creating = ref(false)
 const joining = ref(false)
 const resuming = ref(false)
 const loadingActiveRoom = ref(false)
+const loadingRecommendations = ref(false)
+const joiningRecommendedRoomId = ref('')
 const errorText = ref('')
+const recommendationError = ref('')
 const activeRoom = ref<CurrentActiveRoomRes | null>(null)
+const recommendationProfile = ref<RoomRecommendationProfile | null>(null)
+const recommendedRooms = ref<RecommendedRoom[]>([])
 
 const createForm = reactive({
   room_name: '我的自习室',
@@ -30,6 +41,13 @@ const joinForm = reactive({
 
 function resetError(): void {
   errorText.value = ''
+}
+
+function intensityLabel(level: string | undefined): string {
+  if (level === 'high') return '高强度'
+  if (level === 'relaxed') return '轻松型'
+  if (level === 'normal') return '均衡型'
+  return '新用户'
 }
 
 async function createRoom(): Promise<void> {
@@ -65,6 +83,24 @@ async function joinRoom(): Promise<void> {
     errorText.value = isApiClientError(err) ? err.message : '加入房间失败，请重试。'
   } finally {
     joining.value = false
+  }
+}
+
+async function joinRecommendedRoom(room: RecommendedRoom): Promise<void> {
+  resetError()
+  joiningRecommendedRoomId.value = room.room_id
+  try {
+    const res = await joinByInviteApi({
+      user_id: authStore.userId,
+      invite_code: room.invite_code,
+      display_name: authStore.displayName || 'member',
+    })
+    roomStore.setLastRoomId(res.room_id)
+    await router.push(`/room/${res.room_id}`)
+  } catch (err) {
+    errorText.value = isApiClientError(err) ? err.message : '加入推荐房间失败，请重试。'
+  } finally {
+    joiningRecommendedRoomId.value = ''
   }
 }
 
@@ -104,6 +140,22 @@ async function loadActiveRoom(): Promise<void> {
   }
 }
 
+async function loadRecommendations(): Promise<void> {
+  loadingRecommendations.value = true
+  recommendationError.value = ''
+  try {
+    const res = await getRoomRecommendationsApi(authStore.userId, 6)
+    recommendationProfile.value = res.user_profile
+    recommendedRooms.value = res.rooms
+  } catch (err) {
+    recommendedRooms.value = []
+    recommendationProfile.value = null
+    recommendationError.value = isApiClientError(err) ? err.message : '推荐房间加载失败。'
+  } finally {
+    loadingRecommendations.value = false
+  }
+}
+
 async function enterActiveRoom(): Promise<void> {
   if (!activeRoom.value) return
   resetError()
@@ -113,6 +165,7 @@ async function enterActiveRoom(): Promise<void> {
 
 onMounted(async () => {
   await loadActiveRoom()
+  await loadRecommendations()
   if (roomStore.autoResumeTried) return
   roomStore.markAutoResumeTried()
   if (!roomStore.lastRoomId) return
@@ -163,6 +216,78 @@ onMounted(async () => {
           <strong>{{ authStore.displayName || authStore.loginUserId }}</strong>
           <span>当前账号</span>
         </div>
+      </div>
+    </section>
+
+    <section class="card recommendation-panel">
+      <div class="lobby-card-head">
+        <div>
+          <p class="section-kicker">MATCHED ROOMS</p>
+          <h2>为你推荐的自习室</h2>
+        </div>
+        <span class="badge">{{ intensityLabel(recommendationProfile?.intensity_level) }}</span>
+      </div>
+
+      <div v-if="recommendationProfile" class="recommendation-profile">
+        <div class="lobby-info-pill">
+          <span>平均单次</span>
+          <strong>{{ Math.round(recommendationProfile.avg_session_minutes) }} 分钟</strong>
+        </div>
+        <div class="lobby-info-pill">
+          <span>偏好时长</span>
+          <strong>{{ Math.round(recommendationProfile.preferred_duration_minutes) }} 分钟</strong>
+        </div>
+        <div class="lobby-info-pill">
+          <span>近30天</span>
+          <strong>{{ recommendationProfile.study_days_30d }} 天 / {{ recommendationProfile.total_minutes_30d }} 分钟</strong>
+        </div>
+        <div class="lobby-info-pill">
+          <span>常见时段</span>
+          <strong>{{ recommendationProfile.preferred_period_name }}</strong>
+        </div>
+      </div>
+
+      <p v-if="loadingRecommendations" class="tip">正在根据你的学习习惯匹配房间...</p>
+      <p v-else-if="recommendationError" class="tip tip-error">{{ recommendationError }}</p>
+      <p v-else-if="!recommendedRooms.length" class="tip">
+        暂时没有可推荐的活跃房间。你可以先创建一个房间，系统会根据时长自动生成标签。
+      </p>
+
+      <div v-else class="recommendation-list">
+        <article
+          v-for="room in recommendedRooms"
+          :key="room.room_id"
+          class="recommendation-room"
+        >
+          <div class="recommendation-room-main">
+            <div class="recommendation-room-title">
+              <h3>{{ room.room_name }}</h3>
+              <strong>{{ Math.round(room.match_score * 100) }}%</strong>
+            </div>
+            <div class="recommendation-tags">
+              <span v-for="tag in room.tags" :key="tag.code">{{ tag.name }}</span>
+            </div>
+            <ul class="recommendation-reasons">
+              <li v-for="reason in room.reasons" :key="reason">{{ reason }}</li>
+            </ul>
+          </div>
+
+          <div class="recommendation-room-side">
+            <div class="recommendation-meta">
+              <span>{{ room.duration_minutes }} 分钟</span>
+              <span>{{ room.member_count }}/{{ room.max_members }} 人</span>
+              <span>邀请码 {{ room.invite_code }}</span>
+            </div>
+            <button
+              class="btn btn-primary"
+              type="button"
+              :disabled="joiningRecommendedRoomId === room.room_id"
+              @click="joinRecommendedRoom(room)"
+            >
+              {{ joiningRecommendedRoomId === room.room_id ? '加入中...' : '加入推荐房间' }}
+            </button>
+          </div>
+        </article>
       </div>
     </section>
 

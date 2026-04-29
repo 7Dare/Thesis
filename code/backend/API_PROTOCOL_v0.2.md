@@ -194,6 +194,60 @@ Query：
 3. `my_total_seconds`：当前查询用户在该房间累计学习时长（秒）。
 4. `members`：按累计时长降序返回成员统计。
 
+### `GET /rooms/recommendations` 推荐自习室
+
+Query：
+1. `user_id`：必填
+2. `limit`：可选，默认 `6`，范围 `1-20`
+
+说明：
+1. 根据用户历史学习时长、偏好房间时长、近 30 天学习稳定性，为用户推荐可加入的活跃自习室。
+2. 已加入的房间不会出现在推荐列表中。
+3. 一期采用可解释规则推荐，推荐结果包含标签与推荐理由。
+
+成功 `data`：
+
+```json
+{
+  "user_profile": {
+    "avg_session_minutes": 85.5,
+    "preferred_duration_minutes": 100.0,
+    "preferred_period": "evening",
+    "preferred_period_name": "晚上",
+    "study_days_30d": 12,
+    "total_minutes_30d": 1260,
+    "intensity_level": "high"
+  },
+  "rooms": [
+    {
+      "room_id": "uuid",
+      "room_name": "考研晚间自习室",
+      "host_user_id": "uuid",
+      "duration_minutes": 120,
+      "started_at": "2026-02-15T12:00:00+00:00",
+      "ends_at": "2026-02-15T14:00:00+00:00",
+      "invite_code": "123456789012",
+      "member_count": 3,
+      "max_members": 6,
+      "member_avg_session_minutes": 92.4,
+      "match_score": 0.86,
+      "tags": [
+        {
+          "code": "high_intensity",
+          "name": "高强度",
+          "score": 0.95
+        }
+      ],
+      "reasons": [
+        "你的历史学习时长较长，这个房间节奏更匹配",
+        "房间计划学习 120 分钟",
+        "当前人数适合小组自习"
+      ]
+    }
+  ]
+}
+```
+
 ## 5. WebRTC 音视频连麦信令
 
 ### `WS /rooms/{room_id}/signal?user_id=<uid>&display_name=<name>`
@@ -329,7 +383,7 @@ Query：
 1. 仅当前房间成员可访问聊天接口（`room_memberships.left_at IS NULL`）。
 2. 房间非 `active` 状态或已到期时，聊天写入会被拒绝。
 
-## 7. YOLO 推理上传
+## 7. 推理上传与专注度平滑
 
 ### `POST /ingest/frame`
 `Content-Type: multipart/form-data`
@@ -345,6 +399,34 @@ Query：
 ### `GET /snapshot`
 - 成功：`image/jpeg`
 - 失败：JSON 错误体（如 `snapshot_not_found`）
+
+推理策略：
+1. 后端先使用检测模型识别画面中的人像区域，再将最大人像框裁剪后送入专注度模型。
+2. 专注度模型输出单帧走神判断，但业务层不直接根据单帧触发干预。
+3. 系统维护 `T=3秒` 的时间窗口；只有窗口内走神判定率超过 `70%` 时，才返回 `intervention_required=true`。
+4. 该策略用于降低低头笔记、短暂闭眼等正常学习动作造成的误判。
+
+推理响应新增字段：
+
+```json
+{
+  "focus_label": "focused|suspected_distracted|distracted|no_person|unavailable",
+  "focus_score": 0.82,
+  "focus_enabled": true,
+  "distracted": false,
+  "distraction_rate": 0.33,
+  "intervention_required": false,
+  "focus_window_seconds": 3.0,
+  "focus_window_frames": 4,
+  "focus_detail": {
+    "boredom_prob": 0.12,
+    "engagement_prob": 0.88,
+    "confusion_prob": 0.08,
+    "frustration_prob": 0.05,
+    "distraction_score": 0.12
+  }
+}
+```
 
 ## 8. 个人学习统计
 

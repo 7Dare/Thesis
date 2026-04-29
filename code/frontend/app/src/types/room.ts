@@ -87,6 +87,43 @@ export interface CurrentActiveRoomRes {
   joined_at: string;
 }
 
+export interface RoomRecommendationTag {
+  code: string;
+  name: string;
+  score: number;
+}
+
+export interface RoomRecommendationProfile {
+  avg_session_minutes: number;
+  preferred_duration_minutes: number;
+  preferred_period: string | null;
+  preferred_period_name: string;
+  study_days_30d: number;
+  total_minutes_30d: number;
+  intensity_level: 'new' | 'relaxed' | 'normal' | 'high' | string;
+}
+
+export interface RecommendedRoom {
+  room_id: string;
+  room_name: string;
+  host_user_id: string;
+  duration_minutes: number;
+  started_at: string | null;
+  ends_at: string | null;
+  invite_code: string;
+  member_count: number;
+  max_members: number;
+  member_avg_session_minutes: number;
+  match_score: number;
+  tags: RoomRecommendationTag[];
+  reasons: string[];
+}
+
+export interface RoomRecommendationsRes {
+  user_profile: RoomRecommendationProfile;
+  rooms: RecommendedRoom[];
+}
+
 export interface StudyTimeMember {
   user_id: string;
   display_name: string;

@@ -1,8 +1,8 @@
 # 数据库表设计（v0.5 表格版）
 
-适用场景：自习室管理 + WebRTC 信令 + YOLO 学习状态检测 + 聊天功能。
+适用场景：自习室管理 + WebRTC 信令 + YOLO 学习状态检测 + 聊天功能 + 个性化自习室推荐。
 
-当前策略：`12位数字邀请码`、`可重复使用`、`房间关闭或到期后失效`、成员可中途离开后重入并保留历史记录、聊天一期仅支持房间群聊（`text/system`）+ 会话级已读游标。
+当前策略：`12位数字邀请码`、`可重复使用`、`房间关闭或到期后失效`、成员可中途离开后重入并保留历史记录、聊天一期仅支持房间群聊（`text/system`）+ 会话级已读游标、推荐一期采用可解释规则模型。
 
 ## 1. 选型与主键策略
 
@@ -166,6 +166,59 @@
 
 > 关键唯一约束：`UNIQUE(conversation_id, user_id)`（每用户每会话一条已读游标）。
 
+## 2.10 `user_study_profiles`
+
+用途：缓存用户学习画像，为大厅推荐自习室提供输入。画像可由 `room_memberships` 历史记录定期刷新，也可在推荐接口中动态计算。
+
+| 字段名 | 类型 | 约束 | 说明 |
+|---|---|---|---|
+| user_id | UUID | PK, FK -> users.user_id | 用户 ID |
+| avg_session_minutes | NUMERIC(8,2) | NOT NULL, DEFAULT 0 | 历史平均单次学习时长 |
+| preferred_duration_minutes | NUMERIC(8,2) | NOT NULL, DEFAULT 0 | 偏好的房间计划时长 |
+| preferred_period | VARCHAR(20) | NULL | 常见学习时段：`morning`/`afternoon`/`evening`/`late_night` |
+| study_days_30d | INT | NOT NULL, DEFAULT 0 | 最近 30 天有学习记录的天数 |
+| total_minutes_30d | INT | NOT NULL, DEFAULT 0 | 最近 30 天累计学习分钟数 |
+| intensity_level | VARCHAR(20) | NOT NULL, DEFAULT 'normal' | 用户强度画像：`new`/`relaxed`/`normal`/`high` |
+| updated_at | TIMESTAMPTZ | NOT NULL, DEFAULT now() | 画像更新时间 |
+
+## 2.11 `study_room_tags`
+
+用途：给自习室打标签，支撑大厅展示和推荐解释。标签一期由规则生成，后续可扩展为人工标签或模型标签。
+
+| 字段名 | 类型 | 约束 | 说明 |
+|---|---|---|---|
+| room_id | UUID | PK, FK -> study_rooms.room_id | 房间 ID |
+| tag_code | VARCHAR(40) | PK | 标签编码 |
+| tag_name | VARCHAR(40) | NOT NULL | 标签展示名 |
+| score | NUMERIC(5,2) | NOT NULL, DEFAULT 1.0 | 标签置信度或规则得分 |
+| source | VARCHAR(20) | NOT NULL, DEFAULT 'rule' | 标签来源：`rule`/`manual`/`model` |
+| created_at | TIMESTAMPTZ | NOT NULL, DEFAULT now() | 创建时间 |
+
+推荐一期标签：
+
+| tag_code | tag_name | 规则说明 |
+|---|---|---|
+| high_intensity | 高强度 | 房间计划时长 >= 90 分钟，或成员平均学习时长较长 |
+| relaxed | 轻松型 | 房间计划时长 <= 60 分钟，且成员平均学习强度不高 |
+| long_session | 长时段 | 房间计划时长 >= 120 分钟 |
+| short_sprint | 短时冲刺 | 房间计划时长 <= 45 分钟 |
+| small_group | 小组自习 | 当前在线人数 2-4 人 |
+| stable_focus | 稳定专注 | 成员平均单次学习时长较长 |
+| balanced | 均衡型 | 未命中强特征时的默认标签 |
+
+## 2.12 `room_recommendation_logs`
+
+用途：记录推荐结果，便于论文展示推荐过程、后续统计点击率或加入率。
+
+| 字段名 | 类型 | 约束 | 说明 |
+|---|---|---|---|
+| log_id | BIGSERIAL | PK | 推荐日志主键 |
+| user_id | UUID | NOT NULL, FK -> users.user_id | 被推荐用户 |
+| room_id | UUID | NOT NULL, FK -> study_rooms.room_id | 被推荐房间 |
+| match_score | NUMERIC(6,4) | NOT NULL | 推荐匹配分 |
+| reasons_json | JSONB | NOT NULL, DEFAULT '[]'::jsonb | 推荐理由快照 |
+| created_at | TIMESTAMPTZ | NOT NULL, DEFAULT now() | 推荐时间 |
+
 ## 3. 索引设计
 
 | 表名 | 索引名 | 索引字段 | 用途 |
@@ -183,6 +236,10 @@
 | messages | idx_messages_sender_created_desc | (sender_user_id, created_at DESC) | 用户发送历史 |
 | conversation_read_cursors | uq_crc_conversation_user | (conversation_id, user_id) UNIQUE | 会话已读游标唯一定位 |
 | conversation_read_cursors | idx_crc_user_updated_desc | (user_id, updated_at DESC) | 查询用户会话已读进度 |
+| user_study_profiles | idx_user_study_profiles_intensity | (intensity_level, updated_at DESC) | 按学习强度筛选用户画像 |
+| study_room_tags | idx_study_room_tags_tag_code | (tag_code, score DESC) | 按标签筛选房间 |
+| room_recommendation_logs | idx_room_recommendation_logs_user_created | (user_id, created_at DESC) | 查询用户推荐历史 |
+| room_recommendation_logs | idx_room_recommendation_logs_room_created | (room_id, created_at DESC) | 统计房间被推荐情况 |
 
 ## 4. 设计原则
 

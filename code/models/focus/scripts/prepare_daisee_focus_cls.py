@@ -7,10 +7,16 @@ from pathlib import Path
 
 
 FRAME_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-DEFAULT_CLASS_MAP = {
+DEFAULT_BINARY_CLASS_MAP = {
     0: "low_focus",
     1: "low_focus",
     2: "high_focus",
+    3: "high_focus",
+}
+DEFAULT_THREE_CLASS_MAP = {
+    0: "low_focus",
+    1: "low_focus",
+    2: "medium_focus",
     3: "high_focus",
 }
 
@@ -64,6 +70,12 @@ def parse_args() -> argparse.Namespace:
         "--clip-column",
         default="ClipID",
         help="Column name for clip id. Fallbacks are tried automatically if this is missing.",
+    )
+    parser.add_argument(
+        "--mapping",
+        choices=["binary", "three_class"],
+        default="binary",
+        help="Focus label mapping preset",
     )
     return parser.parse_args()
 
@@ -154,6 +166,12 @@ def _place_image(src: Path, dst: Path, link_images: bool) -> None:
         shutil.copy2(src, dst)
 
 
+def _class_map_for(name: str) -> dict[int, str]:
+    if name == "three_class":
+        return DEFAULT_THREE_CLASS_MAP
+    return DEFAULT_BINARY_CLASS_MAP
+
+
 def process_split(
     split: str,
     frames_root: Path,
@@ -163,6 +181,7 @@ def process_split(
     link_images: bool,
     clip_column: str,
     engagement_column: str,
+    class_map: dict[int, str],
 ) -> dict[str, int]:
     csv_path = _find_csv(labels_root, split)
     rows = _read_rows(csv_path)
@@ -183,7 +202,7 @@ def process_split(
             stats["rows_skipped"] += 1
             continue
 
-        label_name = DEFAULT_CLASS_MAP.get(engagement)
+        label_name = class_map.get(engagement)
         if label_name is None:
             stats["rows_skipped"] += 1
             continue
@@ -216,6 +235,7 @@ def main() -> None:
     args = parse_args()
     output_root = args.output.resolve()
     output_root.mkdir(parents=True, exist_ok=True)
+    class_map = _class_map_for(args.mapping)
 
     for split in args.splits:
         stats = process_split(
@@ -227,12 +247,14 @@ def main() -> None:
             link_images=args.link_images,
             clip_column=args.clip_column,
             engagement_column=args.engagement_column,
+            class_map=class_map,
         )
         print(f"[SPLIT] {split}")
         for key, value in stats.items():
             print(f"  - {key}: {value}")
 
     print(f"[OK] classification dataset ready at: {output_root}")
+    print(f"[INFO] mapping preset: {args.mapping}")
     print("[INFO] expected class folders are under split directories, for example train/low_focus")
 
 

@@ -11,6 +11,7 @@ from app.services.room_service import (
     join_by_invite,
     leave_room,
 )
+from app.services.recommendation_service import get_room_recommendations
 from app.services.signaling_service import SIGNALING_SERVICE
 from app.utils.response import success
 
@@ -53,6 +54,15 @@ def join_by_invite_api(req: JoinByInviteReq):
 @router.get("/rooms/active/current")
 def current_active_room_api(user_id: str = Query(min_length=1, max_length=64)):
     data = get_current_active_room(user_id)
+    return success(data=data)
+
+
+@router.get("/rooms/recommendations")
+def room_recommendations_api(
+    user_id: str = Query(min_length=1, max_length=64),
+    limit: int = Query(default=6, ge=1, le=20),
+):
+    data = get_room_recommendations(user_id=user_id, limit=limit)
     return success(data=data)
 
 

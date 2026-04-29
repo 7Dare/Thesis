@@ -10,6 +10,12 @@ export interface IngestFrameRes {
   focus_label?: string;
   focus_score?: number;
   focus_enabled?: boolean;
+  distracted?: boolean;
+  distraction_rate?: number;
+  intervention_required?: boolean;
+  focus_window_seconds?: number;
+  focus_window_frames?: number;
+  focus_detail?: Record<string, number>;
   ts: number;
 }
 
@@ -24,6 +30,12 @@ export interface InferenceStatusRes {
   focus_label?: string;
   focus_score?: number;
   focus_enabled?: boolean;
+  distracted?: boolean;
+  distraction_rate?: number;
+  intervention_required?: boolean;
+  focus_window_seconds?: number;
+  focus_window_frames?: number;
+  focus_detail?: Record<string, number>;
   ts?: number;
   [key: string]: unknown;
 }

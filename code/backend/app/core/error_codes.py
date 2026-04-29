@@ -40,6 +40,7 @@ ERROR_MESSAGES = {
     "room_get_failed": "查询房间失败（数据库异常）",
     "room_resume_check_failed": "房间恢复检查失败（数据库异常）",
     "room_study_time_failed": "学习时长统计失败（数据库异常）",
+    "room_recommendation_failed": "自习室推荐失败（数据库异常）",
     "invalid_days_range": "统计天数范围不合法",
     "user_stats_failed": "用户学习统计失败（数据库异常）",
     "message_content_empty": "消息内容不能为空",

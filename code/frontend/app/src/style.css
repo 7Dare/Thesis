@@ -1018,6 +1018,102 @@ button:disabled {
   gap: 10px;
 }
 
+.recommendation-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(30, 107, 92, 0.1), transparent 32%),
+    linear-gradient(135deg, rgba(255, 253, 248, 0.94), rgba(241, 247, 239, 0.82));
+}
+
+.recommendation-profile {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.recommendation-list {
+  display: grid;
+  gap: 12px;
+}
+
+.recommendation-room {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.35fr);
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(30, 107, 92, 0.12);
+  background: rgba(255, 253, 248, 0.72);
+}
+
+.recommendation-room-main {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.recommendation-room-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recommendation-room-title h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.recommendation-room-title strong {
+  color: var(--primary-strong);
+  font-size: 1.2rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.recommendation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recommendation-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: var(--primary-strong);
+  background: rgba(214, 239, 229, 0.86);
+  border: 1px solid rgba(30, 107, 92, 0.12);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.recommendation-reasons {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.recommendation-room-side {
+  display: grid;
+  align-content: space-between;
+  gap: 12px;
+}
+
+.recommendation-meta {
+  display: grid;
+  gap: 7px;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+}
+
 .lobby-side-note .kv-list li {
   align-items: center;
   justify-content: flex-start;
@@ -1085,6 +1181,11 @@ button:disabled {
   }
 
   .lobby-current-room-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendation-profile,
+  .recommendation-room {
     grid-template-columns: 1fr;
   }
 

@@ -8,6 +8,7 @@ import type {
   JoinByInviteRes,
   LeaveRoomReq,
   LeaveRoomRes,
+  RoomRecommendationsRes,
   RoomStudyTimeRes,
   ResumeCheckRes,
   RoomDetail,
@@ -26,6 +27,11 @@ export function joinByInviteApi(req: JoinByInviteReq): Promise<JoinByInviteRes> 
 export function getCurrentActiveRoomApi(userId: string): Promise<CurrentActiveRoomRes> {
   const q = new URLSearchParams({ user_id: userId });
   return apiGet<CurrentActiveRoomRes>(`/rooms/active/current?${q.toString()}`);
+}
+
+export function getRoomRecommendationsApi(userId: string, limit = 6): Promise<RoomRecommendationsRes> {
+  const q = new URLSearchParams({ user_id: userId, limit: String(limit) });
+  return apiGet<RoomRecommendationsRes>(`/rooms/recommendations?${q.toString()}`);
 }
 
 export function leaveRoomApi(roomId: string, req: LeaveRoomReq): Promise<LeaveRoomRes> {
