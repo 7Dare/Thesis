@@ -1,4 +1,5 @@
 import os
+import threading
 import time
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -12,6 +13,7 @@ from torchvision import models
 from ultralytics import YOLO
 
 from app.state.runtime import STATE
+from app.services.room_service import record_focus_sample
 
 
 DEFAULT_FOCUS_WEIGHTS = (
@@ -33,8 +35,13 @@ FOCUS_DEVICE = os.getenv("FOCUS_DEVICE", DEVICE)
 FOCUS_DISTRACT_THRESHOLD = float(os.getenv("FOCUS_DISTRACT_THRESHOLD", "0.60"))
 FOCUS_WINDOW_SECONDS = float(os.getenv("FOCUS_WINDOW_SECONDS", "3.0"))
 FOCUS_WINDOW_DISTRACT_RATE = float(os.getenv("FOCUS_WINDOW_DISTRACT_RATE", "0.70"))
-FOCUS_SCORE_BASE = float(os.getenv("FOCUS_SCORE_BASE", "0.55"))
-FOCUS_SCORE_SCALE = float(os.getenv("FOCUS_SCORE_SCALE", "0.45"))
+FOCUS_WEIGHT_ENGAGEMENT = float(os.getenv("FOCUS_WEIGHT_ENGAGEMENT", "0.60"))
+FOCUS_WEIGHT_BOREDOM = float(os.getenv("FOCUS_WEIGHT_BOREDOM", "0.10"))
+FOCUS_WEIGHT_DISENGAGEMENT = float(os.getenv("FOCUS_WEIGHT_DISENGAGEMENT", "0.15"))
+FOCUS_WEIGHT_CONFUSION = float(os.getenv("FOCUS_WEIGHT_CONFUSION", "0.08"))
+FOCUS_WEIGHT_FRUSTRATION = float(os.getenv("FOCUS_WEIGHT_FRUSTRATION", "0.07"))
+FOCUS_SCORE_GAMMA = float(os.getenv("FOCUS_SCORE_GAMMA", "1.8"))
+FOCUS_DISTRACT_PENALTY = float(os.getenv("FOCUS_DISTRACT_PENALTY", "0.22"))
 PERSON_CLASS_ID = int(os.getenv("PERSON_CLASS_ID", "0"))
 PHONE_CLASS_ID = int(os.getenv("PHONE_CLASS_ID", "67"))
 PHONE_FRAMES_TRIGGER = int(os.getenv("PHONE_FRAMES_TRIGGER", "3"))
@@ -186,8 +193,59 @@ def _update_focus_window(room_id: str, user_id: str, now: float, distracted: boo
     }
 
 
-def _calibrate_focus_score(raw_score: float) -> float:
-    return max(0.0, min(1.0, FOCUS_SCORE_BASE + FOCUS_SCORE_SCALE * raw_score))
+def _calibrate_focus_score(raw_score: float, distracted: bool, distraction_rate: float) -> float:
+    raw = max(0.0, min(1.0, raw_score))
+    # Non-linear stretching: push mid-score samples down to avoid clustering around ~0.7.
+    calibrated = raw ** max(0.5, FOCUS_SCORE_GAMMA)
+    if distracted:
+        penalty = FOCUS_DISTRACT_PENALTY * (0.5 + 0.5 * max(0.0, min(1.0, distraction_rate)))
+        calibrated -= penalty
+    return max(0.0, min(1.0, calibrated))
+
+
+def _compute_distraction_score(
+    boredom: float,
+    engagement: float,
+    confusion: float,
+    frustration: float,
+) -> tuple[float, Dict[str, float]]:
+    disengagement = max(0.0, min(1.0, 1.0 - engagement))
+    weights = {
+        "engagement": max(0.0, FOCUS_WEIGHT_ENGAGEMENT),
+        "boredom": max(0.0, FOCUS_WEIGHT_BOREDOM),
+        "disengagement": max(0.0, FOCUS_WEIGHT_DISENGAGEMENT),
+        "confusion": max(0.0, FOCUS_WEIGHT_CONFUSION),
+        "frustration": max(0.0, FOCUS_WEIGHT_FRUSTRATION),
+    }
+    weight_sum = sum(weights.values())
+    if weight_sum <= 1e-6:
+        weights = {
+            "engagement": 0.60,
+            "boredom": 0.10,
+            "disengagement": 0.15,
+            "confusion": 0.08,
+            "frustration": 0.07,
+        }
+        weight_sum = 1.0
+
+    normalized_weights = {name: value / weight_sum for name, value in weights.items()}
+    focus_score_raw = (
+        engagement * normalized_weights["engagement"]
+        + (1.0 - boredom) * normalized_weights["boredom"]
+        + (1.0 - disengagement) * normalized_weights["disengagement"]
+        + (1.0 - confusion) * normalized_weights["confusion"]
+        + (1.0 - frustration) * normalized_weights["frustration"]
+    )
+    distraction_score = 1.0 - focus_score_raw
+    return max(0.0, min(1.0, distraction_score)), {
+        "disengagement_prob": round(disengagement, 4),
+        "weight_engagement": round(normalized_weights["engagement"], 4),
+        "weight_boredom": round(normalized_weights["boredom"], 4),
+        "weight_disengagement": round(normalized_weights["disengagement"], 4),
+        "weight_confusion": round(normalized_weights["confusion"], 4),
+        "weight_frustration": round(normalized_weights["frustration"], 4),
+        "focus_score_raw_weighted": round(max(0.0, min(1.0, focus_score_raw)), 4),
+    }
 
 
 def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now: float) -> Dict:
@@ -195,6 +253,7 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
         return {
             "focus_label": "no_person",
             "focus_score": 0.0,
+            "focus_value": 0.0,
             "focus_enabled": False,
             "distracted": False,
             "distraction_rate": 0.0,
@@ -209,6 +268,7 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
         return {
             "focus_label": "unavailable",
             "focus_score": 0.0,
+            "focus_value": 0.0,
             "focus_enabled": False,
             "distracted": False,
             "distraction_rate": 0.0,
@@ -228,15 +288,26 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
     engagement = float(probs["engagement"][1])
     confusion = float(probs["confusion"][1])
     frustration = float(probs["frustration"][1])
-    distraction_score = max(1.0 - engagement, boredom, confusion, frustration)
+    distraction_score, score_detail = _compute_distraction_score(
+        boredom,
+        engagement,
+        confusion,
+        frustration,
+    )
     distracted = distraction_score >= FOCUS_DISTRACT_THRESHOLD
     window = _update_focus_window(room_id, user_id, now, distracted)
     label = "distracted" if window["intervention_required"] else ("suspected_distracted" if distracted else "focused")
     raw_focus_score = max(0.0, min(1.0, 1.0 - distraction_score))
-    focus_score = _calibrate_focus_score(raw_focus_score)
+    calibrated_score = _calibrate_focus_score(
+        raw_focus_score,
+        distracted=distracted,
+        distraction_rate=float(window["distraction_rate"]),
+    )
+    focus_score = raw_focus_score
     return {
         "focus_label": label,
         "focus_score": round(focus_score, 4),
+        "focus_value": round(focus_score, 4),
         "focus_enabled": True,
         "distracted": distracted,
         **window,
@@ -247,6 +318,8 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
             "frustration_prob": round(frustration, 4),
             "distraction_score": round(distraction_score, 4),
             "raw_focus_score": round(raw_focus_score, 4),
+            "calibrated_focus_score": round(calibrated_score, 4),
+            **score_detail,
         },
     }
 
@@ -325,6 +398,8 @@ def infer_frame(frame: np.ndarray, room_id: str, user_id: str) -> Dict:
         STATE.phone_count = phone_count
         STATE.focus_label = str(focus["focus_label"])
         STATE.focus_score = float(focus["focus_score"])
+        STATE.focus_value = float(focus["focus_value"])
+        STATE.raw_focus_score = float(focus["focus_detail"].get("raw_focus_score", 0.0))
         STATE.focus_enabled = bool(focus["focus_enabled"])
         STATE.distracted = bool(focus["distracted"])
         STATE.distraction_rate = float(focus["distraction_rate"])
@@ -341,6 +416,8 @@ def infer_frame(frame: np.ndarray, room_id: str, user_id: str) -> Dict:
         "phone_count": phone_count,
         "focus_label": focus["focus_label"],
         "focus_score": focus["focus_score"],
+        "focus_value": focus["focus_value"],
+        "raw_focus_score": focus["focus_detail"].get("raw_focus_score", 0.0),
         "focus_enabled": focus["focus_enabled"],
         "distracted": focus["distracted"],
         "distraction_rate": focus["distraction_rate"],
@@ -361,6 +438,7 @@ def ingest_image(raw: bytes, room_id: str, user_id: str) -> Dict:
         raise HTTPException(status_code=400, detail="invalid_image")
 
     out = infer_frame(img, room_id=room_id, user_id=user_id)
+    record_focus_sample(room_id, user_id, out)
     with STATE.lock:
         STATE.last_room_id = room_id
         STATE.last_user_id = user_id
@@ -380,6 +458,8 @@ def get_status() -> Dict:
             "phone_count": STATE.phone_count,
             "focus_label": STATE.focus_label,
             "focus_score": STATE.focus_score,
+            "focus_value": STATE.focus_value,
+            "raw_focus_score": STATE.raw_focus_score,
             "focus_enabled": STATE.focus_enabled,
             "distracted": STATE.distracted,
             "distraction_rate": STATE.distraction_rate,

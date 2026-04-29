@@ -163,6 +163,52 @@ onBeforeUnmount(() => {
         </strong>
       </div>
       <div class="metric-chip">
+        <span class="metric-label">原始分数</span>
+        <strong class="metric-value">
+          {{ inferenceStore.rawFocusScore === null ? '-' : inferenceStore.rawFocusScore.toFixed(4) }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">engagement</span>
+        <strong class="metric-value">
+          {{
+            typeof inferenceStore.focusDetail.engagement_prob === 'number'
+              ? inferenceStore.focusDetail.engagement_prob.toFixed(4)
+              : '-'
+          }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">boredom</span>
+        <strong class="metric-value">
+          {{
+            typeof inferenceStore.focusDetail.boredom_prob === 'number'
+              ? inferenceStore.focusDetail.boredom_prob.toFixed(4)
+              : '-'
+          }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">confusion</span>
+        <strong class="metric-value">
+          {{
+            typeof inferenceStore.focusDetail.confusion_prob === 'number'
+              ? inferenceStore.focusDetail.confusion_prob.toFixed(4)
+              : '-'
+          }}
+        </strong>
+      </div>
+      <div class="metric-chip">
+        <span class="metric-label">frustration</span>
+        <strong class="metric-value">
+          {{
+            typeof inferenceStore.focusDetail.frustration_prob === 'number'
+              ? inferenceStore.focusDetail.frustration_prob.toFixed(4)
+              : '-'
+          }}
+        </strong>
+      </div>
+      <div class="metric-chip">
         <span class="metric-label">分类器状态</span>
         <strong class="metric-value">
           {{ inferenceStore.focusEnabled ? 'enabled' : 'disabled' }}

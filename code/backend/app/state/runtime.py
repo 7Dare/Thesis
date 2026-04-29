@@ -24,6 +24,8 @@ class SharedState:
         self.phone_count = 0
         self.focus_label = "unknown"
         self.focus_score = 0.0
+        self.focus_value = 0.0
+        self.raw_focus_score = 0.0
         self.focus_enabled = False
         self.distracted = False
         self.distraction_rate = 0.0

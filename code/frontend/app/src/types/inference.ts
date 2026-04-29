@@ -9,6 +9,7 @@ export interface IngestFrameRes {
   phone_count: number;
   focus_label?: string;
   focus_score?: number;
+  raw_focus_score?: number;
   focus_enabled?: boolean;
   distracted?: boolean;
   distraction_rate?: number;
@@ -29,6 +30,7 @@ export interface InferenceStatusRes {
   phone_count?: number;
   focus_label?: string;
   focus_score?: number;
+  raw_focus_score?: number;
   focus_enabled?: boolean;
   distracted?: boolean;
   distraction_rate?: number;
