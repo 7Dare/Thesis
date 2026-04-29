@@ -33,6 +33,8 @@ FOCUS_DEVICE = os.getenv("FOCUS_DEVICE", DEVICE)
 FOCUS_DISTRACT_THRESHOLD = float(os.getenv("FOCUS_DISTRACT_THRESHOLD", "0.60"))
 FOCUS_WINDOW_SECONDS = float(os.getenv("FOCUS_WINDOW_SECONDS", "3.0"))
 FOCUS_WINDOW_DISTRACT_RATE = float(os.getenv("FOCUS_WINDOW_DISTRACT_RATE", "0.70"))
+FOCUS_SCORE_BASE = float(os.getenv("FOCUS_SCORE_BASE", "0.55"))
+FOCUS_SCORE_SCALE = float(os.getenv("FOCUS_SCORE_SCALE", "0.45"))
 PERSON_CLASS_ID = int(os.getenv("PERSON_CLASS_ID", "0"))
 PHONE_CLASS_ID = int(os.getenv("PHONE_CLASS_ID", "67"))
 PHONE_FRAMES_TRIGGER = int(os.getenv("PHONE_FRAMES_TRIGGER", "3"))
@@ -184,6 +186,10 @@ def _update_focus_window(room_id: str, user_id: str, now: float, distracted: boo
     }
 
 
+def _calibrate_focus_score(raw_score: float) -> float:
+    return max(0.0, min(1.0, FOCUS_SCORE_BASE + FOCUS_SCORE_SCALE * raw_score))
+
+
 def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now: float) -> Dict:
     if crop is None:
         return {
@@ -226,7 +232,8 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
     distracted = distraction_score >= FOCUS_DISTRACT_THRESHOLD
     window = _update_focus_window(room_id, user_id, now, distracted)
     label = "distracted" if window["intervention_required"] else ("suspected_distracted" if distracted else "focused")
-    focus_score = max(0.0, min(1.0, 1.0 - distraction_score))
+    raw_focus_score = max(0.0, min(1.0, 1.0 - distraction_score))
+    focus_score = _calibrate_focus_score(raw_focus_score)
     return {
         "focus_label": label,
         "focus_score": round(focus_score, 4),
@@ -239,6 +246,7 @@ def _classify_focus(crop: Optional[np.ndarray], room_id: str, user_id: str, now:
             "confusion_prob": round(confusion, 4),
             "frustration_prob": round(frustration, 4),
             "distraction_score": round(distraction_score, 4),
+            "raw_focus_score": round(raw_focus_score, 4),
         },
     }
 
